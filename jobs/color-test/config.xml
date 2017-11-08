@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.11">
+  <actions/>
+  <description>ANSI Color Plug-in is required: https://wiki.jenkins-ci.org/display/JENKINS/AnsiColor+Plugin</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.30">
+    <script>enum COLOR {
+  RED(&quot;\u001B[31m&quot;),
+  BLACK(&quot;\u001B[30m&quot;),
+  GREEN(&quot;\u001B[32m&quot;),
+  YELLOW(&quot;\u001B[33m&quot;),
+  BLUE(&quot;\u001B[34m&quot;),
+  PURPLE(&quot;\u001B[35m&quot;),
+  CYAN(&quot;\u001B[36m&quot;),
+  WHITE(&quot;\u001B[37m&quot;),
+  NO_COLOR(&quot;\u001B[0m&quot;);
+
+  String code;
+
+  public COLOR(String code) {
+    this.code = code;
+  }
+}
+
+
+/*
+  ANSI Color Plug-in is required: https://wiki.jenkins-ci.org/display/JENKINS/AnsiColor+Plugin 
+*/
+def print (def message, def color) {
+   println &quot;${color.code}${message}${COLOR.NO_COLOR.code}&quot;
+}
+
+
+node {
+  wrap([$class: &apos;AnsiColorBuildWrapper&apos;]) {    
+    for (color in COLOR.values()) {
+      print (&quot;${color}&quot;, color)
+    }
+    
+    print (&quot;This message should be in blue.&quot;, COLOR.BLUE)
+  }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

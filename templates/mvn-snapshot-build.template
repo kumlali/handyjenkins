@@ -1,0 +1,36 @@
+#!groovy
+
+/*
+  Used for snapshot builds.
+*/
+
+UTILITIES = load("/hj/scripts/utilities.groovy")
+
+timestamps {
+
+  // -------------------------------------------------------------------------------------------- Build
+  stage ("Initialize") {
+    checkout scm
+    //UTILITIES.setMavenBasedPipelineVersion ()
+  }
+
+  stage ("Compile Maven Project") {
+    UTILITIES.compileMavenProject ()
+  }
+
+  stage ("Test Maven Project") {
+    println "Test stage is disabled."
+    //UTILITIES.testCompiledMavenProject ()
+  }
+
+  stage ("Check Quality of Tested Maven Project") {
+    println "Quality check stage is disabled."
+    //UTILITIES.checkQualityOfTestedMavenProject ()
+  }
+
+  stage ("Deploy Maven Artifacts to Artifactory") {
+    UTILITIES.deployMavenArtifactsToArtifactory ()
+  }
+
+}
+

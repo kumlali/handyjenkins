@@ -1,0 +1,288 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scriptApproval plugin="script-security@1.27">
+  <approvedScriptHashes>
+    <string>008189a25748a2e0efed1adf17d6de31b9face71</string>
+    <string>0167f47a96abf7d9cb4314126bd41f0f542d8d89</string>
+    <string>01c1e93bd509d33f8cea6c7278fa0d0c0dff5d89</string>
+    <string>0292644e02ec5fd50ab7a4a47f542c6c75285572</string>
+    <string>02ee1bb88d1342460e15404c005348ef5dbf0687</string>
+    <string>0335c32fe9b702f2ae0ab0d36c15af3440cca713</string>
+    <string>051efee07d9229fb24f44e020c113e37dd9c1b70</string>
+    <string>05722fed4af5134113a36621b49349d1b51aabd5</string>
+    <string>05d972d174b727c18af5229a457c6d663e3fe211</string>
+    <string>0603c873f59adaa298e07109b4db0c8cc4c8280a</string>
+    <string>0801b26037626049b88b4c7fdb7a54b1f89f4a21</string>
+    <string>08084b5f133466b7bdb8273d5efba3ed9b63792a</string>
+    <string>09a15c19a2624dde263a8696247756e96ee69456</string>
+    <string>09ef9ce9eb31004d33be5c24aadfad877c87d5f8</string>
+    <string>09f7a2512195304d32ec8f557a7b1eb260a075f9</string>
+    <string>0aacbba3e25ed69578fabfda636f4124528cfc56</string>
+    <string>0cd765eaa3978bb1b92328c6144abf00a45d0fa7</string>
+    <string>0d6ac1f4e47367f9b335edfe9ea221d144f187e2</string>
+    <string>111a92380b92f4bbd0ffabc7a8b7ff96b3d671ff</string>
+    <string>12639bb19a1570fcdb66f91b956838c3fdf04608</string>
+    <string>12fca2098908e8dae5951f2b401a6443faf1d02d</string>
+    <string>14c30a411f9f1c0ace57caf3fbfe8c26508ae613</string>
+    <string>1530ed697b73ae474b3eb6522d09e9f872101a6e</string>
+    <string>1679b0ae6da85081a1fd98cff44ed381c7c79b5b</string>
+    <string>16f11b44d8bb5ada3ace748bdfd6f77a61f48b95</string>
+    <string>188e2e320067bd27f2bf757b6c3e04f18c94696f</string>
+    <string>192b4f8227e9054f6b31c6d90ea0b32edeb9b08f</string>
+    <string>1955718bfead42fbb62ed3ac99bed75b8583db77</string>
+    <string>1a781fcc4c939b8995ad1233e77f98926968800a</string>
+    <string>1ae224790a192bc05d3a4a2f4d49d1320e7e8f1f</string>
+    <string>1b755a345693c9b8dc98a4b0392217b82f07dec1</string>
+    <string>1c3dd0fb0d28525d208d588ee07d1074309d95bc</string>
+    <string>1e157cf4d77fc79ed254e89947c102e6f642bc77</string>
+    <string>1e64640e9076c3a14434763a418882445d4528bc</string>
+    <string>1ed7f3b74fce7770392f6c9e382eebd60a3156ff</string>
+    <string>1fa7440c664f5d1ff7be2d859c3fc9dfd9b616c7</string>
+    <string>22a72e11e64b7056b49249a1fba63370e1b9fc3a</string>
+    <string>2347bc7b68ad4f556a7ab058e8a5d8155bfd72b7</string>
+    <string>23e7fc11bd163ac3bf5ccb8d889fd78f0717e459</string>
+    <string>263fe34b63b5343a673dc11f7e62d226da5b547f</string>
+    <string>268bab7a2425dd5732853617d5b98ed41cefa763</string>
+    <string>299ce29cb19112e8142dbfc62945886e8984cea5</string>
+    <string>2d18eaeeec8492e13bb01aa646703e5d6d83c26a</string>
+    <string>2db63c205109a38b51cd1062c6951f1e48173e5e</string>
+    <string>2dc36d7c3f35d2e63471e885d04c5ba271309d04</string>
+    <string>2f7e079d51c75b89b0873c63e9ef0660946482da</string>
+    <string>308f6437e77808835099b5cfa96e7efbfc80c2df</string>
+    <string>31f9d53d76481d5900c94e3e94ee7abdaaa0bd5b</string>
+    <string>343d4d062ca8212b4484cecba03c1a87df3884d7</string>
+    <string>35e047848e7c8464a940633e803f0657a81f3dc2</string>
+    <string>3948c3dc53a7859e5e02c853214b83ef1a349fa0</string>
+    <string>3951051a6de748c2be5b76f97eb9f01e2d547957</string>
+    <string>3c0969e96dda229f8e3dead87cc4577d8d9e7317</string>
+    <string>3c15ac60448349aa438567488af501416d5a2569</string>
+    <string>3da03895bec7e492d7a65a363244e3e47dc27368</string>
+    <string>4276d3d43f3fd8acd51de4b2f2fe8b42f696b005</string>
+    <string>42d56511dedd71a6da8df143fdf2f4266560b65e</string>
+    <string>43a21610a3778fe2bd050254b21a09be7eb4ae87</string>
+    <string>443fe59fdd287f54906c6baed6ee8996d89645f9</string>
+    <string>44bf49cbd458d984b4f643bc5e59929b423fb6e1</string>
+    <string>48154923a3cd9fc9e17fb4bbe8cd765fba93ce29</string>
+    <string>4be6e5b4a306607fad646b385be54d96384a3175</string>
+    <string>4d0cdd85776d618c9cef4682aa75e4e09aab2bd2</string>
+    <string>4dcca854dc41801b9727ff8ea8de93dcaf43d853</string>
+    <string>4ed3f27fc037c91689b5f2417becb700a60172ea</string>
+    <string>4fe18d90e02e4abf05a75cb7458731e2e0513b6c</string>
+    <string>5096ebab1dfd968b25c1b167fbedab57adff37d2</string>
+    <string>51300eee6eb44f029665eb20c69526618340c7a5</string>
+    <string>525019ce1c295be1d7c2c6e392053880bebc7d6d</string>
+    <string>52e9f277a76cda79f0a200968e464ad313a0d5be</string>
+    <string>5338e9c76d2a39f499dfee052a3e83c620cdc4eb</string>
+    <string>53b67000a466066a967faebd3ba7fce7ae31352f</string>
+    <string>55079323cbf8cf4a520fe9d381e8616149cb981c</string>
+    <string>5681a045a2c567949d52fea33591ae143904d925</string>
+    <string>5683092a6dc0d552ebc248ecbbb4bf34d7d2ee8c</string>
+    <string>57f162e9ed4128746d0819550933588124b291e6</string>
+    <string>581ece9cdbdda1615cfc4e78f2636a6b3e01d3f6</string>
+    <string>5bb40764fa21d262d6ce0c7e24feaf36b0139ae0</string>
+    <string>5c7a20915e66a71f6fd9034bb1033b84c8db4956</string>
+    <string>5d4068a233e12c7bd42f6cd87f96f5c7ebeb81dc</string>
+    <string>5d9ed01f2c1b079c9609ca7943b52ebf76b86524</string>
+    <string>5f2b6946e6ab646944787f6666ffeb452bcd37ff</string>
+    <string>604e026a849efac7b121657509ce5f62cfff78d9</string>
+    <string>60b5eaf0c3cdf1788f01e9c51a4f4b954faaa0cf</string>
+    <string>6373445fea0ed49d2854ecd68383d111c9d1696b</string>
+    <string>63c14eba8c76d2d6181cc65abd1c0f304df74ebb</string>
+    <string>63e7b18a8c92abc4d197942dd04a9f4913eb0f58</string>
+    <string>6490747ddd2061df0921c532e2924a0e5957f6d0</string>
+    <string>6628a6d782a51d607c9ef41526cbd327158d6867</string>
+    <string>662ff92f5d306b2ae91d40f417bf4f7cdff75a19</string>
+    <string>66a38a5573367dbc9e67bd389aebbc88ff95c3ae</string>
+    <string>68903b9800e7da1b951e69ad11bd8246b04ab6fb</string>
+    <string>69ec822e913a04153c295ff0e2f5dcfa74c7988e</string>
+    <string>6c1730ae896ada70de6461a07f7379dc31b60199</string>
+    <string>6c26ee92f886272e9f164b93e0b9b14e5b44ad16</string>
+    <string>6ddc333501450655b5b18448f481940c16aa0b01</string>
+    <string>6e8501745ae4a6ac71a12dd28b1d0b1f3c1f164d</string>
+    <string>6e9e66dc8eba5c0c5ae6cb280fda46511bdd505a</string>
+    <string>6f57b705c8fdcd177978a238de1d9194ce471b10</string>
+    <string>7026dd90431704aa9b4837eb0d8e4930f83e0f08</string>
+    <string>704da5c8a79f879a05dc28b5f72dfe9fda0a49e3</string>
+    <string>7123737efcc980c7be0643c79607755d42a39e90</string>
+    <string>731e3114661adf0e2b36380921ba77b7c0e334ce</string>
+    <string>75ff669888951f42740fe0591c3b69c50034ddac</string>
+    <string>77bc0e2de3681bdc3b1e401feff7bb08681a53fe</string>
+    <string>77d1accbd1f5f9bc77fe1e7d68668f7bf145eff0</string>
+    <string>78b8aed66119ee1cd6a3754bc0136b5c2b975de5</string>
+    <string>7983ec5191d1178b1de78c48b51486212fb96850</string>
+    <string>79ac33482990623af7fed25fb64fa87833591d48</string>
+    <string>79b24cad854c3b0caa7a51a66cf2179b61bafa35</string>
+    <string>7cfb2e4f385e7702fca89da69c6e62ed5aacbe79</string>
+    <string>7e4f7670a3fe7cc8ebe96158aef6818ae2ca9508</string>
+    <string>7eb6d38e349142a9819bd2ccd66771b784bdca0d</string>
+    <string>7efd5a2332bcaf6f661d753841734cc0418da936</string>
+    <string>7f4ecf88fb0b0abe01765c42f767c87728b3fed2</string>
+    <string>8005cfe20b48bc2d2ec89919f852951b66af2af7</string>
+    <string>808144f3fcb8cc8fb7393919a2c9038d1d1c968f</string>
+    <string>80dc15635f72fa3ceb6e9f29c836c0efafbeb448</string>
+    <string>82419ccc789b5022f21e95d6611396d81f64b696</string>
+    <string>8292b474e4bf7127ad41e407f932c9816c1aeca5</string>
+    <string>8611890725890bdaa6a7e9eed69d645da9cefb5a</string>
+    <string>86db9d08aebcf87088cf57c12273f133f669f79a</string>
+    <string>871e2dff69b329014bf2759833073450c440ddc9</string>
+    <string>87784737d032001a7457d5204bc7928c3655df5d</string>
+    <string>88e9b388f5fb597bfff0bcc80c43c43401a966fb</string>
+    <string>898c76032f1bd4dcdb55567a509e5600226de957</string>
+    <string>89b11847fa2d59f4e85b5299f79a3d0ab3f5a564</string>
+    <string>8ac66ebd56c3e38dae6c9c9d217b0aada8629090</string>
+    <string>8accfe7ff61c41ced7436137d921c48600ce249d</string>
+    <string>8be6df4c1cb04855e843589f88fd90b5d708e2a8</string>
+    <string>8bf63991d16d6a8c0b9fc852cf8e171977467837</string>
+    <string>8c8c5ce0f7514f2af41b634e5d3852d99885e58b</string>
+    <string>8cbebaafd8e938f033bac82e6ee87f616a235c21</string>
+    <string>8cfd718ad4d82b477e95ddbd00fd2a6d787c9139</string>
+    <string>8d0e9006ae507018c37e7d06051d707ee4011eee</string>
+    <string>8d6602d9714bb7e2d7955b58fafba41951362fb7</string>
+    <string>8dd1a61ae68b511bd47624325d7d8bf7919ee110</string>
+    <string>8e3118b2c5120adc5b28a23688ccad9c6c3875d3</string>
+    <string>8e5d9765cfd0f562fbc088d6a03de87c0693799f</string>
+    <string>8e6973ffafee88ff223b25292e8a938e7e7d7a7f</string>
+    <string>8e6a6c826134440b0bd86c392050f2c29ee31a69</string>
+    <string>8ec8d60201c5e4b2b5045a9fa7849885a1a549c8</string>
+    <string>8f42c63a9dc3a4e8ff0569a706846697275e9ff3</string>
+    <string>8ffc2b6943519957fcfd315406a162c0030b9e63</string>
+    <string>901f08d31a06bc61e4d027232cdafdf9e92d78c2</string>
+    <string>90fe440265215110a4e1c376dfaa0cf16c9fe95f</string>
+    <string>97483923e1fa3788a0a6ad81ca602fd47a269c75</string>
+    <string>9832b4020ab0cada863aa111f8c0f0a1fc2feb61</string>
+    <string>99511cd54405f8dfc77e09bc1226454fc94f46a8</string>
+    <string>9ab9380c656204de48f81c13394d333db46bab87</string>
+    <string>9b4bb85380f4d1766392a787ba60d798dbd6b22b</string>
+    <string>9c885521bc8d1677b497d497a007db85f3215978</string>
+    <string>9c92ebf6b91ee0c88522645b27d9fc71995a5acd</string>
+    <string>9df2a1807de31e07e29c2ad66efde9f4634af4fe</string>
+    <string>9e345f81d7e73f5d284f91dbb3f6f866f09a4566</string>
+    <string>9f000f278a8e1a7117a2e42c9d22296d191129d4</string>
+    <string>9f8fc3da4f04aba6dc093c7ad790974c8cdca3d7</string>
+    <string>9ff4f33462be8e296790922835b9284757c2b54a</string>
+    <string>a12696e3fb66fc9e8c2858d47ef13034f661d1d5</string>
+    <string>a1c48c52e3f8997cd812dca9d6f091173aac4098</string>
+    <string>a481e2471b1d3c0e66c7fb621f5eb7b33566b657</string>
+    <string>a49d2c2b818a08f0e1991e1f5b1f823b07173d9f</string>
+    <string>a6e8f201e45a0405b6c9efbab9a12e5062e41729</string>
+    <string>a6ff6cbf2bbefe2fcaa75b81a6430548d065143e</string>
+    <string>a97b6997df88e71dc1a4b83c695e6b9a3db04a07</string>
+    <string>a9bb5deacaca263c43963f67a2cc80405fe0c4a3</string>
+    <string>a9bed07845ed566406c2307c1bcebef68b3a6e49</string>
+    <string>aa1987b5ab820744cb72de2e4c1b8a54f33ed719</string>
+    <string>ab00e7ef3e5eeda41ad284073dafcead876998ba</string>
+    <string>ab54dd43206b15c2aaba2ec34ba87bd9596baa34</string>
+    <string>ab95825300d30b1c5e014963fc998ba211814905</string>
+    <string>abc8209171558e25bd253f083da74afb9c84cd9c</string>
+    <string>ac7a25bb70ff36f1bfa56c02a91e2f873785d07a</string>
+    <string>af1dbe790a9147ce9a48751756b2146c5b026542</string>
+    <string>b21634de2becbb570b21e024d51ba30ba7d79d5d</string>
+    <string>b2a8e4caa80652e3d1b724610c0d317fe3f31c1c</string>
+    <string>b473e2851881199dcbbc5b9496bb2843980b67d9</string>
+    <string>b4a1e02760aa69cd5d11eba3919ebdfb1219cc7f</string>
+    <string>b61243153e3bcbe536005f39a64bf83e2a6c6001</string>
+    <string>b6203cc6832943ad78c0a706f29f3bb73bccd289</string>
+    <string>ba8a4bea381868db16a829a1538489190b0fb2b8</string>
+    <string>bb5c922eb5349a51fd647aa700c8aa2bffe6f190</string>
+    <string>bbe9d0cd909eff5a66b2de75eeb64f1a7f38680d</string>
+    <string>bcc182672778e84bc488b57e1a322ee6b8f846eb</string>
+    <string>bec69976a0c3ce7ab2ddc88573bfd847932b4394</string>
+    <string>bf8d58f1af04dc0d572088bc1beb1c4988bc79a4</string>
+    <string>c059a9d4efb34a3060c59f884256ff0a55836e6a</string>
+    <string>c0aa066d62141bb93a50a099d8e1f1123dbc44b3</string>
+    <string>c43b42e71cedc402986e3832d1265825124798a2</string>
+    <string>c56ab043aefb4fc7b6408479e4782d365b8f2b8d</string>
+    <string>c5ac05b0845fc6aaf9224869d39da2cec84b63ee</string>
+    <string>c678a96f95165845fe016d7a644666a15b1e76e2</string>
+    <string>c93eac3a7bc8c21d409ca568cd26ce24148ee5a4</string>
+    <string>ca14b67d96e438a72d22f9092b934bec3dcef901</string>
+    <string>cb0a298f21efe9ead5ebf35ed83b3c51eff85974</string>
+    <string>cb2263f5d717834f28d620932c5568577cd7d6bc</string>
+    <string>cbe8dfabc57518b714f2e4a93be4ae5681bbd7cd</string>
+    <string>cc29a803e5882612d62750dfb2a8ec9aa0653359</string>
+    <string>cf365e8e8d192f345b832cc4cf0e08b5c739ab03</string>
+    <string>d11bec440c15f19cffb019c9335815e508409eaf</string>
+    <string>d22d7940cbfe503beba9695d4edfe34d23d1e202</string>
+    <string>d2540848ebf61e94962858902736fd54ff667e2b</string>
+    <string>d5215a2bac27e6226c6def6148ee97b40333b9ec</string>
+    <string>d602aa3bc6f99a6f4c3c7814d989642ce56411b1</string>
+    <string>d65eea9aefd8327bfe5dbaba7d6afdf1399a3d53</string>
+    <string>da52a3af14fb41cfbf0690e2d6d9c43d11cb6d70</string>
+    <string>da55a193e68221ceb1ae6abf9e1d1f53138d013c</string>
+    <string>da5d0b04586981269eff714d4167f1ea1e9575be</string>
+    <string>daf38b5076c6637efd48aff0bc31a19edfb3f156</string>
+    <string>db9e9aea3bc6e987068684f0fee78905e68af609</string>
+    <string>dd14165461d965f7af0181ac8abb9bf2e0322076</string>
+    <string>def16c3788b0d3433a9231870c309dfb2560a1b3</string>
+    <string>df1a7b9a0aaaab29d3f24a9473aa9e274c89d21b</string>
+    <string>e11559662ba37daf29d3fc2157dd63cc818ec513</string>
+    <string>e1a29967518270c8f972647a655af18c215aefb0</string>
+    <string>e316640d783bb8854331f57dfa995f79d79c23d7</string>
+    <string>e512cd83ad2520fdc2a51b31017ea678ba952028</string>
+    <string>e8b93440c766e1f37090bdf706f62595e8f2d3fc</string>
+    <string>e8cb2c0604ec1666185252f9eeb1d68558039fda</string>
+    <string>e8d59716d81cef319d6c22714c6f4d0d76c19459</string>
+    <string>e8ec4ef9d96230921dd4481d72b2b831dbb23471</string>
+    <string>e9d177bb303f7d9ce6586b13c228f33436798276</string>
+    <string>eb050f92f3dbefb8e61ab233764f2410b798be47</string>
+    <string>eb3c5f1251542abb1fa470b82cd18626f4fe48d6</string>
+    <string>ec1403b9604aa5838e7c45c997dbf853a7040902</string>
+    <string>ef4ac468c0987bc6af6384f38f5a1dcdac6635e0</string>
+    <string>ef9e45e8a3381fb32c1c5788a63b602f2617cc8a</string>
+    <string>f0d44f607688af1df764ef5f150892a0fefe8cde</string>
+    <string>f0ffcd9d028c8097577f5c726bb7d160cae5cfee</string>
+    <string>f1703a49a0bfc81cedae0fd14ac938155bb7435d</string>
+    <string>f1e539e71c14145aa43b26fde70abf44bd46363a</string>
+    <string>f39a74885eeb2ffee73653ca2d1b26b41c6199e0</string>
+    <string>f3c4fcac89f47db372129b67da39946de90d58ac</string>
+    <string>f61367775958075c8d4d98b05b9b7aae14192e23</string>
+    <string>f642b33b5daed71e5ce87f555e75c9e2ade822da</string>
+    <string>f765ae7360c13aef640e4c26628742e9d77f685b</string>
+    <string>f8abb1dfdc26ddd4db5f2d468cee35ffb38b9ece</string>
+    <string>f8e47a10f16385b5c90a4fd37522a544ce1c7f61</string>
+    <string>f8f3245d14147b1606a10be270410311c1d6f118</string>
+    <string>f9e35aa24bbf1e5cfc2e246d745b682650d3657f</string>
+    <string>f9ef53b9df3570076ffce4b428e10dbcb68baef3</string>
+    <string>f9f07a9fb40d35f32c03b4efd197a90dabf07a37</string>
+    <string>fa1eacc939600228704831b7dd5d7448a413073a</string>
+    <string>fbda35105db02d9f98ff42b8b96b6b695d49d143</string>
+    <string>fc04b16d15d43878f38eb54492915da40bd479b0</string>
+    <string>fc0bc228d05bd9cb06caaa287c25a38f36b932a7</string>
+    <string>ffcf595002c6a4f2c8cc66070e7e3ea68fb0b7f5</string>
+  </approvedScriptHashes>
+  <approvedSignatures>
+    <string>field hudson.model.Run project</string>
+    <string>field java.util.ArrayList size</string>
+    <string>method groovy.lang.GroovyObject getProperty java.lang.String</string>
+    <string>method groovy.util.XmlSlurper parseText java.lang.String</string>
+    <string>method groovy.util.slurpersupport.GPathResult text</string>
+    <string>method hudson.PluginManager getPlugins</string>
+    <string>method hudson.PluginWrapper getShortName</string>
+    <string>method hudson.PluginWrapper getVersion</string>
+    <string>method hudson.model.Job getBuildDiscarder</string>
+    <string>method hudson.model.Job getBuilds</string>
+    <string>method hudson.model.Run getNumber</string>
+    <string>method hudson.model.Run isKeepLog</string>
+    <string>method hudson.tasks.LogRotator getNumToKeep</string>
+    <string>method hudson.util.RunList completedOnly</string>
+    <string>method hudson.util.RunList overThresholdOnly hudson.model.Result</string>
+    <string>method java.lang.Class isInstance java.lang.Object</string>
+    <string>method java.util.Collection toArray java.lang.Object[]</string>
+    <string>method jenkins.model.Jenkins getItemByFullName java.lang.String</string>
+    <string>method jenkins.model.Jenkins getPluginManager</string>
+    <string>method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild</string>
+    <string>new groovy.util.XmlSlurper</string>
+    <string>new java.lang.Exception java.lang.String</string>
+    <string>staticField hudson.model.Result SUCCESS</string>
+    <string>staticMethod jenkins.model.Jenkins getInstance</string>
+    <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getText java.net.URL</string>
+    <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods removeElement java.util.Collection java.lang.Object</string>
+    <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods sort java.util.Collection</string>
+    <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods toList java.lang.Object[]</string>
+    <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods toList java.util.Collection</string>
+  </approvedSignatures>
+  <aclApprovedSignatures/>
+  <approvedClasspathEntries/>
+  <pendingScripts/>
+  <pendingSignatures/>
+  <pendingClasspathEntries/>
+</scriptApproval>
