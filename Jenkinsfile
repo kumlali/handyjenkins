@@ -6,7 +6,7 @@ node {
 
     stage ("Initialize") {
 
-      // We intentionally load the script from SCM instead of from /tools/scripts directory.
+      // We intentionally load the script from SCM instead of from /hj/scripts directory.
       // Otherwise it would be too difficult and cumbursome to correct mistakes in utilities.groovy 
       // that breaks handyjenkins's build.
       UTILITIES = fileLoader.fromGit("scripts/utilities.groovy", "https://github.com/kumlali/handyjenkins.git", "master", "", "")
@@ -25,7 +25,7 @@ node {
       env.PL_MAVEN_GROUP = ""
       env.PL_MAVEN_ARTIFACT = ""
       env.PL_MAVEN_ARTIFACT_PATH = ""
-      env.PL_DOCKER_IMAGE = "kumlali/handyjenkins"
+      env.PL_DOCKER_IMAGE = "alisadikkumlali/handyjenkins"
       env.PL_SWARM_MANAGER_NODE = ""
       env.PL_SWARM_SERVICE_NAME = ""
       env.PL_SWARM_NETWORK = ""

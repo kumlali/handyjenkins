@@ -1,10 +1,10 @@
-# Handy Jenkins - kumlali/handyjenkins
+# Handy Jenkins - handyjenkins
 
 A Jenkins image to help minimize overhead of having separate Jenkins for each project.
 
-Instead of managing all projects with a central Jenkins, in some cases, using separate Jenkins servers for each project would be a better solution. `happyjenkins` was created to simplify installation and management of Jenkins to achive that goal.
+Instead of managing all projects with a central Jenkins, in some cases, using separate Jenkins servers for each project would be a better solution. `handyjenkins` was created to simplify installation and management of Jenkins to achive that goal.
 
-Put it simply, `happyjenkins` is a customized Docker image based on [Jenkins's official image](https://github.com/jenkinsci/docker) similar to 
+Put it simply, `handyjenkins` is a customized Docker image based on [Jenkins's official image](https://github.com/jenkinsci/docker) similar to 
 * https://github.com/Accenture/adop-jenkins
 * https://github.com/fabric8io/jenkins-docker
 
@@ -41,12 +41,13 @@ It aims to overcome following complications:
 * Clone https://github.com/kumlali/handyjenkins.git 
 * Put public certificate of corporate proxy under `certs` directory.
 * To access Jenkins over HTTPS, put key and certificate files under `certs` directory. You can use `https_cert.pem` and `https_key.pem` files provided.
+* Put public certificates of git, svn, Artifactory, SonarCube and other services accessed through HTTPS under `certs` directory.
 * Customize `conf\handyjenkins.conf` according to your environment.
 * Replace `conf\settings.xml` with the one having your company's private Maven repository definitions.
 * Replace sample `ssh\id\_rsa` and `ssh\id\_rsa.pub` files with yours. You can use sample files provided. In that case, do not forget to add content of `ssh\id\_rsa.pub` into `authorized_keys` of your target servers.
 * Create Dockerfile for your Jenkins based on `handyjenkins`:
 ```bash
-FROM artifactory.mycompany.com/kumlali/handyjenkins:latest
+FROM alisadikkumlali/handyjenkins:latest
 ```
 * Build your image by providing build arguments for proxy server:
 ```

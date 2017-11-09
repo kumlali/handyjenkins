@@ -61,8 +61,9 @@ RUN unlink /etc/localtime \
 
 ########################################################################
 # Install certificates
-# * Key and certificate to let Jenkins serve on HTTPS
-# * Public certificates of git, svn or other services accessed through HTTPS
+# * Key and certificate to access Jenkins over HTTPS
+# * Public certificates of git, svn, Artifactory, SonarCube or other services 
+#   accessed through HTTPS
 # * Public certificate of proxy server
 ########################################################################
 COPY certs/ /hj/certs
@@ -189,14 +190,13 @@ RUN sudo chown -R jenkins:jenkins ${TEMPLATES_HOME}
 ########################################################################
 # Configure Jenkins with some defaults
 ########################################################################
-# Because JENKINS_HOME directory defined as VOLUME in original Jenkins'
-# Dockerfile(https://github.com/jenkinsci/docker/blob/master/Dockerfile)
-# files copied to it will not exist when container started. Therefore,
+# Because JENKINS_HOME directory is defined as VOLUME in Jenkins's
+# Dockerfile(https://github.com/jenkinsci/docker/blob/master/Dockerfile),
+# files copied to it does not exist when container started. Therefore,
 # JENKINS_HOME content must be copied to /usr/share/jenkins/ref instead of 
-# /var/jenkins_home. While container starting jenkins.sh 
+# /var/jenkins_home. While container starting, jenkins.sh 
 # (https://github.com/jenkinsci/docker/blob/master/jenkins.sh) is executed 
-# and that script copies the files from /usr/share/jenkins/ref to 
-# /var/jenkins_home.
+# and it copies the files from /usr/share/jenkins/ref to /var/jenkins_home.
 COPY conf/scriptApproval.xml /usr/share/jenkins/ref/scriptApproval.xml
 COPY conf/settings.xml ${MAVEN_HOME}/conf/settings.xml
 COPY init.groovy.d/ /usr/share/jenkins/ref/init.groovy.d
