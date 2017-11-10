@@ -43,57 +43,137 @@ It aims to overcome following complications:
 |![Configure Global Security - Project-based Matrix Authorization Strategy, CSRF, proxy compability, CLI over Remoting](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_07.jpg)| | |
 
 
-# Creating Custom Images Based on `handyjenkins`
+# How to Build `handyjenkins`
+* Clone https://github.com/kumlali/handyjenkins.git
+* If you are required to use proxy server to access internet, put public certificate of your proxy into `certs` directory.
+* Build the image
+```bash
+docker build \
+  --build-arg HTTP_PROXY="http://proxy.mycompany.com:8080" \
+  --build-arg NO_PROXY=".mycompany.com,.sock,localhost,127.0.0.1,::1" \
+  -t handyjenkins .
+```
 
+# Creating Your Jenkins Image By Customizing `handyjenkins` Source
 * Clone https://github.com/kumlali/handyjenkins.git 
-* Put public certificate of corporate proxy under `certs` directory.
-* To access Jenkins over HTTPS, put key and certificate files under `certs` directory. You can use `https_cert.pem` and `https_key.pem` files provided.
-* Put public certificates of git, svn, Artifactory, SonarCube and other services accessed through HTTPS under `certs` directory.
-* Customize `conf\handyjenkins.conf` according to your environment.
-* Replace `conf\settings.xml` with the one having your company's private Maven repository definitions.
-* Replace sample `ssh\id\_rsa` and `ssh\id\_rsa.pub` files with yours. You can use sample files provided. In that case, do not forget to add content of `ssh\id\_rsa.pub` into `authorized_keys` of your target servers.
-* Create Dockerfile for your Jenkins based on `handyjenkins`:
+* Put your certificates (SSL, proxy, Gitea, SVN, Artifactory etc.) into `certs` directory. Skip this step if you do not need Jenkins to serve on HTTPS port and to connect Gitea, SVN, Artifactory etc. via HTTPS.
+* Replace `conf/settings.xml` with the one having your company's private Maven repository definitions. Skip this step if you do not have private repository and customized `settings.xml` for your environment.
+* Replace sample `ssh/id_rsa` and `ssh/id_rsa.pub` files with yours. For testing purposes, you can use sample files and add content of `ssh/id_rsa.pub` into `authorized_keys` of your target servers. However, please be warned that it is not safe and recomended. Skip this step if you do not need to ssh via key-based authentication.
+* Build the image. If you are required to use proxy server to access internet, you need to provide build arguments for the proxy server:
+```bash
+docker build \
+  --build-arg HTTP_PROXY="http://proxy.mycompany.com:8080" \
+  --build-arg NO_PROXY=".mycompany.com,.sock,localhost,127.0.0.1,::1" \
+  -t myjenkins .
+```
+
+Version info can also be added to image's `/tmp/version.txt` file:
+
+```bash
+docker build \
+  --build-arg HTTP_PROXY="http://proxy.mycompany.com:8080" \
+  --build-arg NO_PROXY=".mycompany.com,.sock,localhost,127.0.0.1,::1" \
+  --build-arg HJ_BUILD_DATE="`date`" \
+  --build-arg HJ_IMAGE="myjenkins" \
+  --build-arg HJ_VERSION="1.0" \  
+  -t myjenkins .
+
+...
+
+docker run -it myjenkins cat /tmp/version.txt
+BUILD DATE: Fri Nov 10 15:43:26 +03 2017, IMAGE: myjenkins, VERSION: 1.0
+```
+
+# Creating Your Jenkins Image Based on `handyjenkins` Image
+
+* Create your project directory
+```bash
+mkdir myjenkins
+```
+* Create `certs`, `conf` and `ssh` directories under project's directory
+```bash
+cd myjenkins
+mkdir certs conf ssh
+```
+* Put your certificates (SSL, proxy, Gitea, SVN, Artifactory etc.) into `certs` directory
+* Put Maven's `settings.xml` suitable to your environment into `conf` directory
+* Put `id_rsa` and `id_rsa.pub` files used for key based authentication into `ssh` directory
+```bash
+myjenkins/
+├── certs/
+│   ├── artifactory.mycompany.com.crt
+│   ├── gogs.mycompany.com.crt
+│   ├── myjenkins.mycompany.com.cert.pem
+│   ├── myjenkins.mycompany.com.key.pem
+│   ├── proxy.mycompany.com.crt
+│   └── svn.mycompany.com.crt
+├── conf/
+│   └── settings.xml
+└── ssh/
+    ├── id_rsa
+    └── id_rsa.pub
+```
+* Create `Dockerfile` under your project directory
 ```bash
 FROM alisadikkumlali/handyjenkins:latest
+
+COPY certs/ /hj/certs
+RUN sudo cp /hj/certs/* /usr/local/share/ca-certificates && sudo update-ca-certificates
+COPY ssh/ /hj/ssh
+COPY conf/settings.xml /hj/maven/conf/settings.xml
 ```
-* Build your image by providing build arguments for proxy server:
+* Build the image
 ```
-docker build \
-  --build-arg HTTP_PROXY="http://proxy.mycompany.com:8080" \
-  --build-arg NO_PROXY=".mycompany.com,.sock,localhost,127.0.0.1,::1" \
-  -t artifactory.mycompany.com/myjenkins .
+docker build -t myjenkins .
 ```
 
-Version info can also be added to image's `/tmp/version.txt`:
+# Running Your Jenkins Container Based on `handyjenkins`
 
+We need to provide runtime configuration as environment variables. All the variables `handyjenkins` understand exist in `conf/handyjenkins.conf`. We need to customize  `conf/handyjenkins.conf` according to our environment.
 ```
-docker build \
-  --build-arg HTTP_PROXY="http://proxy.mycompany.com:8080" \
-  --build-arg NO_PROXY=".mycompany.com,.sock,localhost,127.0.0.1,::1" \
-  --build-arg HJ_BUILD_DATE="20171108_1325" \
-  --build-arg HJ_IMAGE="myjenkins" \
-  --build-arg HJ_VERSION="1" \  
-  -t artifactory.mycompany.com/myjenkins -t artifactory.mycompany.com/myjenkins:1 .
-```
-* Push the image to registry such as Artifactory
-```
-docker push artifactory.mycompany.com/myjenkins
-```
+########################################################################
+# Proxy server settings
+########################################################################
+HTTP_PROXY=proxy.mycompany.com:8080
+http_proxy=proxy.mycompany.com:8080
+HTTPS_PROXY=proxy.mycompany.com:8080
+https_proxy=proxy.mycompany.com:8080
+FTP_PROXY=proxy.mycompany.com:8080
+ftp_PROXY=proxy.mycompany.com:8080
+NO_PROXY=.mycompany.com,.sock,localhost,127.0.0.1,::1
+no_proxy=.mycompany.com,.sock,localhost,127.0.0.1,::1
 
-# Running Docker Containers Based on `handyjenkins`
+########################################################################
+# Credentials
+########################################################################
+# Credentials for authenticating to SVN, Gitea, JIRA, FishEye, Artifactory, SonarCube, etc.
+HJ_AUTH_CREDENTIALS_USERNAME=myuser
+HJ_AUTH_CREDENTIALS_PASSWORD=mypass
 
-We need to provide key-value pairs listed in `conf\handyjenkins.conf` as environment variables.
+# Username for key-based ssh authentication. /hj/ssh/id_rsa is used as private key.
+HJ_SSH_CREDENTIALS_USERNAME=mysshuser
+
+########################################################################
+# LDAP server settings
+########################################################################
+# For example: ldap.mycompany.com:389
+HJ_LDAP_SERVER=ldap.mycompany:389
+
+# For example: OU=Internal,DC=mycompany,DC=com
+HJ_LDAP_ROOTDN=OU=Internal,DC=mycompany,DC=com
+...
+```
 
 ## Running Container without Persistent Data
 
 ```bash
 serviceName="myproject-jenkins"
 
-docker run --name ${serviceName} \
-  -p 8443:8083 \
+docker run -d --name ${serviceName} \
+  --publish 8443:8083 \
   --env-file conf/handyjenkins.conf \
   --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock,readonly \
-  artifactory.mycompany.com/myjenkins:latest
+  myjenkins
 ```
 
 ## Running Container with Persistent Data
@@ -107,11 +187,11 @@ sudo mkdir -p ${dataDir}
 sudo chown 1000:1000 ${dataDir}
 
 docker run -d --name ${serviceName} \
-  -p 8443:8083 \
+  --publish 8443:8083 \
   --env-file conf/handyjenkins.conf \
   --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock,readonly \
   --mount type=bind,src=${dataDir},dst=/var/jenkins_home \
-  artifactory.mycompany.com/myjenkins:latest
+  myjenkins
 ```
 
 ## Creating Swarm Service with Persistent Data
@@ -127,11 +207,11 @@ sudo mkdir -p ${dataDir}
 sudo chown 1000:1000 ${dataDir}
 
 docker service create --name ${serviceName} \
-  -p 8443:8083 \
+  --publish 8443:8083 \
   --env-file conf/handyjenkins.conf \
   --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock,readonly \
   --mount type=bind,src=${dataDir},dst=/var/jenkins_home \
-  artifactory.mycompany.com/myjenkins:latest
+  myjenkins
 ```
 
 ## Creating Swarm Service with Persistent Data and Sending Console Log to Graylog
@@ -145,14 +225,14 @@ sudo mkdir -p ${dataDir}
 sudo chown 1000:1000 ${dataDir}
 
 docker service create --name ${serviceName} \
-  -p 8443:8083 \
+  --publish 8443:8083 \
   --env-file conf/handyjenkins.conf \
   --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock,readonly \
   --mount type=bind,src=${dataDir},dst=/var/jenkins_home \
   --log-driver=gelf --log-opt gelf-address=udp://graylog.mycompany.local:12214 \
   --log-opt env=ENV_NAME,PROJECT_NAME,SERVICE_NAME,DOCKER_SERVICE_NAME,PUBLIC_PORT,VERSION \
-  -e ENV_NAME= -e PROJECT_NAME=myproject -e SERVICE_NAME=jenkins -e DOCKER_SERVICE_NAME=${serviceName}s -e PUBLIC_PORT=8443 -e VERSION=1 \
-  artifactory.mycompany.com/myjenkins:latest
+  -e ENV_NAME= -e PROJECT_NAME=myproject -e SERVICE_NAME=jenkins -e DOCKER_SERVICE_NAME=${serviceName}s -e PUBLIC_PORT=8443 -e VERSION=latest \
+  myjenkins
 ```
 
 # Testing
