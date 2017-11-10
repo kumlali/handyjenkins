@@ -231,7 +231,7 @@ docker service create --name ${serviceName} \
   --mount type=bind,src=${dataDir},dst=/var/jenkins_home \
   --log-driver=gelf --log-opt gelf-address=udp://graylog.mycompany.local:12214 \
   --log-opt env=ENV_NAME,PROJECT_NAME,SERVICE_NAME,DOCKER_SERVICE_NAME,PUBLIC_PORT,VERSION \
-  -e ENV_NAME= -e PROJECT_NAME=myproject -e SERVICE_NAME=jenkins -e DOCKER_SERVICE_NAME=${serviceName}s -e PUBLIC_PORT=8443 -e VERSION=latest \
+  -e ENV_NAME= -e PROJECT_NAME=myproject -e SERVICE_NAME=jenkins -e DOCKER_SERVICE_NAME=${serviceName} -e PUBLIC_PORT=8443 -e VERSION=latest \
   myjenkins
 ```
 
