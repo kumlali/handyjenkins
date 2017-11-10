@@ -31,7 +31,7 @@ Thread.start {
   }
 
   if (!authCredsExist) {    
-    def authCredsDescription = "Credentials for authenticating to SVN, BitBucket, JIRA, FishEye, etc."
+    def authCredsDescription = "Credentials for authenticating to SVN, Gogs, JIRA, FishEye, etc."
     def authCredsScope = CredentialsScope.GLOBAL
     def authCredsUsername = env['HJ_AUTH_CREDENTIALS_USERNAME']
     def authCredsPassword = env['HJ_AUTH_CREDENTIALS_PASSWORD']

@@ -1,4 +1,4 @@
-# Handy Jenkins - handyjenkins
+# handyjenkins
 
 A Jenkins image to help minimize overhead of having separate Jenkins for each project.
 
@@ -34,6 +34,13 @@ It aims to overcome following complications:
   * Automatically marking builds as "keep forever" if pipeline ends by deploying to production
   * Automatically generating unique ports for different deployment environments
 
+# Screenshots
+
+|  |  |  |
+|:-------------:|:-------:|:-------:|
+|![Default jobs, views and LDAP authentication](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_01.jpg)|![Credentials](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_02.jpg)|![Credentials - SSH Username with private key](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_03.jpg)|
+|![Credentials - Username and password](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_04.jpg)|![Configure System - Number of executors](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_05.jpg)|![Configure Global Security - LDAP configuration](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_06.jpg)|
+|![Configure Global Security - Project-based Matrix Authorization Strategy, CSRF, proxy compability, CLI over Remoting](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_07.jpg)| | |
 
 
 # Creating Custom Images Based on `handyjenkins`
