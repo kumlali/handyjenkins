@@ -250,10 +250,281 @@ curl -kX GET https://localhost:8443
 
 # Using Utility Functions in Pipelines
 
-TODO
+[utilities.groovy](scripts/utilities.groovy) provides functions to simplify continues delivery processes and pipelines. The file is under container's `/hj/scripts` directory and can be loaded within pipeline script:
+```groovy
+#!groovy
+
+node {  
+  UTILITIES = load("/hj/scripts/utilities.groovy")
+
+  stage ("Initialization") {
+    UTILITIES.printEnvironmentVariables ()
+  }
+}
+```
+
+Let's assume we have a Maven project. Here is the pipeline script that compiles, tests and deploys it:
+
+```groovy
+#!groovy
+
+node { 
+  UTILITIES = load("/hj/scripts/utilities.groovy")
+
+  timestamps {
+
+    stage ("Initialize") {
+      checkout scm    
+    }
+
+    stage ("Compile Maven Project") {
+      // mvn -B -V -U clean compile
+      UTILITIES.compileMavenProject ()
+    }
+
+    stage ("Test Maven Project") {
+      // mvn -B verify org.jacoco:jacoco-maven-plugin:prepare-agent
+      UTILITIES.testCompiledMavenProject ()
+    }
+
+    stage ("Check Quality of Tested Maven Project") {
+      // mvn -B sonar:sonar -P sonar-profile -Dsonar.host.url=${env.HJ_SONAR_SERVER}
+      UTILITIES.checkQualityOfTestedMavenProject ()
+    }
+
+    stage ("Deploy Maven Artifacts to Artifactory") {
+      // mvn -B deploy -DskipTests=true
+      UTILITIES.deployMavenArtifactsToArtifactory ()
+    }
+
+  }
+}
+```
+
+Let's assume;
+* we have different swarm clusters for test and prod environments
+* multiple projects can co-exist on the same swarm cluster. For example, test environment of project1 and project2 can co-exist on the same test cluster
+* for each project; we have dev, alpha, beta and preprod as test environments those run on test swarm cluster
+* for each project; we have prod environment that runs on prod swarm cluster
+* we have a Maven project and would like to run it as swarm service
+* we want to create different ports for dev, alpha, beta, ... automatically
+
+Here is Dockerfile for it:
+
+```Dockerfile
+FROM artifactory.mycompany.com/java:alpine
+
+ARG SERVICE_NAME=<serviceName>
+ENV SERVICE_NAME=${SERVICE_NAME}
+
+CMD java -jar /data/${SERVICE_NAME}.jar server /data/conf/${ENV_NAME}/config.yml
+
+EXPOSE 80
+
+ADD conf /data/conf
+ADD target/${SERVICE_NAME}.jar /data/${SERVICE_NAME}.jar
+```
+
+And here is the pipeline for it:
+
+```groovy
+env.PL_PROJECT_NAME = "myproject"
+env.PL_SERVICE_NAME = "myservice"
+env.PL_MAVEN_GROUP = "com.mycompany.${env.PL_PROJECT_NAME}"
+env.PL_MAVEN_ARTIFACT = "${env.PL_SERVICE_NAME}"
+env.PL_MAVEN_ARTIFACT_PATH = "com/mycompany/${env.PL_PROJECT_NAME}/${env.PL_SERVICE_NAME}"
+env.PL_SERVICE_PRIVATE_PORT = "80"
+// If public port must be different for each environment(dev, alpha, ...)
+// set following variable. (See UTILITIES.getPublicPort ())
+// DEV: 8901, ALPHA: 8902, BETA: 8903, ...
+env.PL_SERVICE_PUBLIC_PORT_BASE = "8900"
+env.PL_DOCKER_IMAGE = "mycompany/${env.PL_PROJECT_NAME}/${env.PL_SERVICE_NAME}"
+
+node { 
+  UTILITIES = load("/hj/scripts/utilities.groovy")
+
+  timestamps {
+
+    // -------------------------------------------------------------------------------------------- Build
+    stage ("Initialize") {
+      checkout scm
+      // Creates pipeline version from pom.xml, commit ID and Jenkins's 
+      // build number and set env.PL_VERSION to it.
+      UTILITIES.setMavenBasedPipelineVersion ()
+    }
+
+    stage ("Compile Maven Project") {
+      UTILITIES.compileMavenProject ()
+    }
+
+    stage ("Test Maven Project") {
+      UTILITIES.testCompiledMavenProject ()
+    }
+
+    stage ("Check Quality of Tested Maven Project") {
+      UTILITIES.checkQualityOfTestedMavenProject ()
+    }
+
+    stage ("Deploy Maven Artifacts to Artifactory") {
+      UTILITIES.deployMavenArtifactsToArtifactory ()
+    }
+
+    stage ("Build Docker Image") {
+      def options = "--build-arg SERVICE_NAME=${env.PL_SERVICE_NAME}"
+      UTILITIES.buildDockerImage (options)
+      UTILITIES.pushDockerImageToArtifactory ()
+    }
+
+    stage ("Clean-Up") {
+      UTILITIES.discardMavenArtifactsOnLocalMavenRepository ()
+      UTILITIES.discardMavenArtifactsOnArtifactory()
+      UTILITIES.discardImagesOnArtifactory()    
+    }
+
+
+    // -------------------------------------------------------------------------------------------- Deploy
+
+    // ----- DEV
+    env.PL_DEPLOY_ENV = "dev"
+    env.PL_SWARM_MANAGER_NODE = "swarmmngtest.mycompany.com"
+    env.PL_GRAYLOG_SERVER = "graylogtest.mycompanytest.local"
+    env.PL_GRAYLOG_PORT = "12214"
+    
+
+    stage ("Initialize - ${env.PL_DEPLOY_ENV}") {
+      env.PL_SWARM_SERVICE_NAME = "myproject-${env.PL_DEPLOY_ENV}-${env.PL_SERVICE_NAME}"
+      env.PL_SWARM_NETWORK = "myproject-${env.PL_DEPLOY_ENV}-network"
+    }
+
+    stage ("Update DB - ${env.PL_DEPLOY_ENV}") {
+      sh "if [ -e \"conf/${env.PL_DEPLOY_ENV}/flyway.conf\" ]; then flyway -configFile=conf/${env.PL_DEPLOY_ENV}/flyway.conf migrate info; else echo \"No update will be done as there is no Flyway configuration\"; fi"
+    }
+
+    stage ("Deploy Image to Swarm - ${env.PL_DEPLOY_ENV}") {    
+      def createOptions = ""
+      def updateOptions = ""
+      UTILITIES.deployImageToSwarm (env.PL_VERSION, createOptions, updateOptions)
+    }
+
+    stage ("Smoke Tests") {
+      println "Unimplemented"
+      // build job: "myproject Smoke Tests"
+    }
+
+    
+    // ----- ALPHA
+    env.PL_DEPLOY_ENV = "alpha"
+    env.PL_SWARM_MANAGER_NODE = "swarmmngtest.mycompany.com"
+    env.PL_GRAYLOG_SERVER = "graylogtest.mycompanytest.local"
+    env.PL_GRAYLOG_PORT = "12214"
+
+    stage ("Initialize - ${env.PL_DEPLOY_ENV}") {
+      env.PL_SWARM_SERVICE_NAME = "myproject-${env.PL_DEPLOY_ENV}-${env.PL_SERVICE_NAME}"
+      env.PL_SWARM_NETWORK = "myproject-${env.PL_DEPLOY_ENV}-network"
+    }
+
+    stage ("Update DB - ${env.PL_DEPLOY_ENV}") {
+      sh "if [ -e \"conf/${env.PL_DEPLOY_ENV}/flyway.conf\" ]; then flyway -configFile=conf/${env.PL_DEPLOY_ENV}/flyway.conf migrate info; else echo \"No update will be done as there is no Flyway configuration\"; fi"
+    }
+
+    stage ("Deploy Image to Swarm - ${env.PL_DEPLOY_ENV}") {    
+      def createOptions = ""
+      def updateOptions = ""
+      UTILITIES.deployImageToSwarm (env.PL_VERSION, createOptions, updateOptions)
+    }
+
+    stage ("Regression Tests") {
+      println "Unimplemented"
+      //build job: "myproject Regression Tests"
+    }
+    
+    // ----- BETA
+    // TODO
+
+    // ----- PREPROD
+    // TODO
+
+    // ----- PROD
+    env.PL_DEPLOY_ENV = "prod"
+    env.PL_SWARM_MANAGER_NODE = "swarmmng.mycompany.com"
+    env.PL_GRAYLOG_SERVER = "graylog.mycompanyprod.local"
+    env.PL_GRAYLOG_PORT = "12214"
+
+    stage ("Initialize - ${env.PL_DEPLOY_ENV}") {
+      env.PL_SWARM_SERVICE_NAME = "myproject-${env.PL_DEPLOY_ENV}-${env.PL_SERVICE_NAME}"
+      env.PL_SWARM_NETWORK = "myproject-${env.PL_DEPLOY_ENV}-network"
+    }
+
+    stage ("Update DB - ${env.PL_DEPLOY_ENV}") {
+      sh "if [ -e \"conf/${env.PL_DEPLOY_ENV}/flyway.conf\" ]; then flyway -configFile=conf/${env.PL_DEPLOY_ENV}/flyway.conf migrate info; else echo \"No update will be done as there is no Flyway configuration\"; fi"
+    }
+
+    stage ("Deploy Image to Swarm - ${env.PL_DEPLOY_ENV}") {    
+      def createOptions = "--replicas=4"
+      def updateOptions = ""
+      UTILITIES.deployImageToSwarm (env.PL_VERSION, createOptions, updateOptions)
+    }
+
+    stage ("Keep This Build Forever") {
+      // Because our service went live, we want to keep the build forever.
+      UTILITIES.keepBuildForever (env.BUILD_NUMBER)
+    }
+
+  }
+}
+```
+
+
+
 
 # Using Pipeline Templates
 
-TODO
+Instead of writing similar pipeline scripts for each project, we can use templates. Templates are simply Groovy scripts that can be used in pipelines.
 
+For example, if have following `mvn-build.template` file under `/hj/templates` directory:
 
+```groovy
+#!groovy
+
+UTILITIES = load("/hj/scripts/utilities.groovy")
+
+timestamps {
+
+  stage ("Initialize") {
+    checkout scm    
+  }
+
+  stage ("Compile Maven Project") {
+    // mvn -B -V -U clean compile
+    UTILITIES.compileMavenProject ()
+  }
+
+  stage ("Test Maven Project") {
+    // mvn -B verify org.jacoco:jacoco-maven-plugin:prepare-agent
+    UTILITIES.testCompiledMavenProject ()
+  }
+
+  stage ("Check Quality of Tested Maven Project") {
+    // mvn -B sonar:sonar -P sonar-profile -Dsonar.host.url=${env.HJ_SONAR_SERVER}
+    UTILITIES.checkQualityOfTestedMavenProject ()
+  }
+
+  stage ("Deploy Maven Artifacts to Artifactory") {
+    // mvn -B deploy -DskipTests=true
+    UTILITIES.deployMavenArtifactsToArtifactory ()
+  }
+
+}
+```
+
+then we can call it within our pipelines as follows:
+
+```groovy
+#!groovy
+
+node {  
+  
+  load("/hj/templates/mvn-build.template")
+
+}
+```
