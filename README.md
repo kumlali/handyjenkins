@@ -325,7 +325,7 @@ ADD conf /data/conf
 ADD target/${SERVICE_NAME}.jar /data/${SERVICE_NAME}.jar
 ```
 
-And here is the pipeline for it:
+and here is pipeline script:
 
 ```groovy
 env.PL_PROJECT_NAME = "myproject"
@@ -481,7 +481,7 @@ node {
 
 Instead of writing similar pipeline scripts for each project, we can use templates. Templates are simply Groovy scripts that can be used in pipelines.
 
-For example, if have following `mvn-build.template` file under `/hj/templates` directory:
+For example, if we have following `mvn-build.template` file under `/hj/templates` directory:
 
 ```groovy
 #!groovy

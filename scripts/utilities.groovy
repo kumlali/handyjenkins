@@ -64,6 +64,43 @@ def initialize () {
 }
 
 /*
+  ANSI Color Plug-in is required: https://wiki.jenkins-ci.org/display/JENKINS/AnsiColor+Plugin 
+*/
+def printMsg (def message, def color) {
+   println "${color.code}${message}${COLOR.NO_COLOR.code}"
+}
+
+def printTitle (def title, def color) {
+   def seperator = "------------------------------------------------------------"
+   def fancyTitle = "${color.code}${seperator}\n${title}\n${seperator}${COLOR.NO_COLOR.code}"
+   println fancyTitle
+}
+
+def printRed (def message) {
+   printMsg (message, COLOR.RED)
+}
+
+def printGreen (def message) {
+   printMsg (message, COLOR.GREEN)
+}
+
+def printBlue (def message) {
+   printMsg (message, COLOR.BLUE)
+}
+
+def printRedTitle (def title) {
+  printTitle (title, COLOR.RED)
+}
+
+def printGreenTitle (def title) {
+  printTitle (title, COLOR.GREEN)
+}
+
+def printBlueTitle (def title) {
+  printTitle (title, COLOR.BLUE)
+}
+
+/*
   Prints environment variables excluding passwords.
 */
 def printEnvironmentVariables () {
@@ -757,8 +794,6 @@ def doCleanupOnSwarm () {
   }
 }
 
-
-
 /*
   Returns following values as service status:
     * 1 (STATUS.SERVICE_DOES_NOT_EXIST): If service does not exist.
@@ -813,12 +848,8 @@ def startService (def service, def replicas) {
   executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
 }
 
-/*
-  Starts given service. The service must have already be created.
-  If replicas parameter is not provided, 1 replica is created. 
-*/
 def stopService (def service) {  
-  def command = "docker service scale ${service}=0"
+  def command = "docker service update --detach=false --replicas 0 ${service}"
   executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
 }
 
@@ -827,43 +858,10 @@ def deleteService (def service) {
   executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
 }
 
-/*
-  ANSI Color Plug-in is required: https://wiki.jenkins-ci.org/display/JENKINS/AnsiColor+Plugin 
-*/
-def printMsg (def message, def color) {
-   println "${color.code}${message}${COLOR.NO_COLOR.code}"
+def stopAllServices () {  
+  def command = "for i in $(docker service ls -q); do docker service update --detach=false --replicas 0 $i; done"
+  executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
 }
-
-def printTitle (def title, def color) {
-   def seperator = "------------------------------------------------------------"
-   def fancyTitle = "${color.code}${seperator}\n${title}\n${seperator}${COLOR.NO_COLOR.code}"
-   println fancyTitle
-}
-
-def printRed (def message) {
-   printMsg (message, COLOR.RED)
-}
-
-def printGreen (def message) {
-   printMsg (message, COLOR.GREEN)
-}
-
-def printBlue (def message) {
-   printMsg (message, COLOR.BLUE)
-}
-
-def printRedTitle (def title) {
-  printTitle (title, COLOR.RED)
-}
-
-def printGreenTitle (def title) {
-  printTitle (title, COLOR.GREEN)
-}
-
-def printBlueTitle (def title) {
-  printTitle (title, COLOR.BLUE)
-}
-
 
 initialize ()
 
