@@ -859,7 +859,7 @@ def deleteService (def service) {
 }
 
 def stopAllServices () {  
-  def command = "for i in $(docker service ls -q); do docker service update --detach=false --replicas 0 $i; done"
+  def command = "for i in \$(docker service ls -q); do docker service update --detach=false --replicas 0 \$i; done"
   executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
 }
 
