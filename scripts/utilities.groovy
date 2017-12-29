@@ -863,6 +863,11 @@ def stopAllServices () {
   executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
 }
 
+def deleteAllServices () {  
+  def command = "for i in \$(docker service ls -q); do docker service rm \$i; done"
+  executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
+}
+
 initialize ()
 
 return this;
