@@ -312,7 +312,7 @@ def testCompiledMavenProject () {
 }
 
 def checkQualityOfTestedMavenProject () {
-  sh "mvn -B sonar:sonar -P sonar-profile -Dsonar.host.url=${env.HJ_SONAR_SERVER}"
+  sh "mvn -B ${env.HJ_SONAR_USERNAME}:${env.HJ_SONAR_PASSWORD} -P ${env.HJ_SONAR_PROFILE} -Dsonar.host.url=${env.HJ_SONAR_SERVER}"
 }
 
 def deployMavenArtifactsToArtifactory () {
