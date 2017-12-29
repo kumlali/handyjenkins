@@ -119,6 +119,16 @@ Thread.start {
     jenkins.CLI.get().setEnabled(false)
     println "[HJ] --> CLI over remoting disabled."  
 
+    /* 
+     * Disable old Non-Encrypted agent protocols 
+     * 
+     * Based on https://issues.jenkins-ci.org/browse/JENKINS-45841 and https://git.io/vbbM5
+     */
+    HashSet<String> newProtocols = new HashSet<>(instance.getAgentProtocols())
+    newProtocols.removeAll(Arrays.asList(
+      "JNLP3-connect", "JNLP2-connect", "JNLP-connect", "CLI-connect"   
+    ))
+    instance.setAgentProtocols(newProtocols)
 
     /* 
      * Enable Slave -> Master Access Control
