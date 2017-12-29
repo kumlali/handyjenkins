@@ -39,10 +39,10 @@ def addView (def viewName, def jobs) {
 }
 
 Thread.start {
-  println "[HJ] --> Creating default view..."
-  if (env['HJ_CREATE_DEFAULT_VIEW']=="true") {
+  println "[HJ] --> Creating HJ view..."
+  if (env['HJ_CREATE_HJ_VIEW']=="true") {
     addView ("[HJ]", hjJobs)
   } else {
-    println "[HJ] --> Default view was not created because HJ_CREATE_DEFAULT_VIEW is not true."    
+    println "[HJ] --> HJ view was not created because HJ_CREATE_HJ_VIEW is not true."
   }
 }
