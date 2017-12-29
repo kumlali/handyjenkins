@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.11.1">
+<flow-definition plugin="workflow-job@2.16">
   <actions>
     <org.jenkinsci.plugins.workflow.multibranch.JobPropertyTrackerAction plugin="workflow-multibranch@2.16">
       <jobPropertyDescriptors>
@@ -22,7 +22,7 @@
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.42">
     <script>#!groovy
 def userInput
 
@@ -39,11 +39,11 @@ node {
 
     UTILITIES = load(&quot;/hj/scripts/utilities.groovy&quot;)
 
-    def shPathOnHost = UTILITIES.executeSshCommandOnHost (&quot;sudo which sh&quot;,
+    def hostName = UTILITIES.executeSshCommandOnHost (&quot;sudo hostname&quot;,
           &quot;${userInput}&quot;,
           &quot;&quot;,
           &quot;&quot;).trim()
-    println &quot;sh path on host: ${shPathOnHost}&quot;
+    println &quot;Successfully connected to ${hostName}.&quot;
 
   }
 
@@ -52,4 +52,3 @@ node {
   </definition>
   <triggers/>
   <disabled>false</disabled>
-</flow-definition>
