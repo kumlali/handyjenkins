@@ -121,6 +121,12 @@ COPY certs/ /hj/certs
 RUN sudo cp /hj/certs/* /usr/local/share/ca-certificates && sudo update-ca-certificates
 COPY ssh/ /hj/ssh
 COPY conf/settings.xml /hj/maven/conf/settings.xml
+
+# If needed, add common jobs for the company
+# COPY jobs/ /usr/share/jenkins/ref/jobs
+
+# If needed, add Oracle JDBC driver for Flyway
+# RUN curl -o /hj/flyway/drivers/ojdbc6-11.2.0.2.0.jar http://artifactory.mycompany.com/artifactory/releases/com/oracle/ojdbc6/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar
 ```
 * Build the image
 ```
