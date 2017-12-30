@@ -90,13 +90,14 @@ BUILD DATE: Fri Nov 10 15:43:26 +03 2017, IMAGE: myjenkins, VERSION: 1.0
 ```bash
 mkdir myjenkins
 ```
-* Create `certs`, `conf` and `ssh` directories under project's directory
+* Create `certs`, `conf` and `ssh` directories under project's directory. If you have jobs to include the image create `jobs` directory as well.
 ```bash
 cd myjenkins
-mkdir certs conf ssh
+mkdir certs conf jobs ssh
 ```
 * Put your certificates (SSL, proxy, Gitea, SVN, Artifactory etc.) into `certs` directory
 * Put Maven's `settings.xml` suitable to your environment into `conf` directory
+* Copy job directories(if exists) into `jobs` directory
 * Put `id_rsa` and `id_rsa.pub` files used for key based authentication into `ssh` directory
 ```bash
 myjenkins/
@@ -109,11 +110,14 @@ myjenkins/
 │   └── svn.mycompany.com.crt
 ├── conf/
 │   └── settings.xml
-└── ssh/
-    ├── id_rsa
-    └── id_rsa.pub
+├── jobs/
+|    ├── job1
+|    └── job2
+├── ssh/
+|    ├── id_rsa
+|    └── id_rsa.pub
 ```
-* Create `Dockerfile` under your project directory
+* Create `Dockerfile` under your p|roject directory
 ```bash
 FROM alisadikkumlali/handyjenkins:latest
 
@@ -123,7 +127,13 @@ COPY ssh/ /hj/ssh
 COPY conf/settings.xml /hj/maven/conf/settings.xml
 
 # If needed, add common jobs for the company
-# COPY jobs/ /usr/share/jenkins/ref/jobs
+COPY jobs/ /usr/share/jenkins/ref/jobs
+
+# Set timezone to Europe/Istanbul
+ENV TIMEZONE="Europe/Istanbul"
+ENV JAVA_OPTS="${JAVA_OPTS} -Duser.timezone=${TIMEZONE}"
+RUN unlink /etc/localtime \
+  && ln -s /usr/share/zoneinfo/"${TIMEZONE}" /etc/localtime
 
 # If needed, add Oracle JDBC driver for Flyway
 # RUN curl -o /hj/flyway/drivers/ojdbc6-11.2.0.2.0.jar http://artifactory.mycompany.com/artifactory/releases/com/oracle/ojdbc6/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar
@@ -160,7 +170,12 @@ HJ_AUTH_CREDENTIALS_PASSWORD=mypass
 HJ_SSH_CREDENTIALS_USERNAME=mysshuser
 
 ########################################################################
-# LDAP server settings
+# Security settings
+########################################################################
+HJ_ENABLE_SECURITY=true
+
+########################################################################
+# LDAP server settings (HJ_ENABLE_SECURITY must be true)
 ########################################################################
 # For example: ldap.mycompany.com:389
 HJ_LDAP_SERVER=ldap.mycompany:389
