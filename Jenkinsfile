@@ -7,7 +7,7 @@ node {
     stage ("Initialize") {
 
       // We intentionally load the script from SCM instead of from /hj/scripts directory.
-      // Otherwise it would be too difficult and cumbursome to correct mistakes in utilities.groovy 
+      // Otherwise it would be too difficult and cumbersome to correct mistakes in utilities.groovy 
       // that breaks handyjenkins's build.
       UTILITIES = fileLoader.fromGit("scripts/utilities.groovy", "https://github.com/kumlali/handyjenkins.git", "master", "", "")
 
