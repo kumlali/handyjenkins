@@ -38,9 +38,11 @@ class BuildPermission {
 Thread.start {
 
   sleep 10000
-
-  if (!instance.isUseSecurity ()) {
   
+  if (env['HJ_ENABLE_SECURITY'] != "true") {
+    instance.disableSecurity ()
+    println "[HJ] --> Security disabled."
+  } else {
     /* 
      * Configure LDAP
      * 
@@ -92,43 +94,6 @@ Thread.start {
       }
       
     }
-
-  
-    /*
-     * This configuration prevents some problems especially when a load balancer exists in front of Jenkins.
-     * 
-     * Based on https://github.com/samrocketman/jenkins-bootstrap-jervis/blob/master/scripts/configure-csrf-protection.groovy
-     * 
-     * Manuel steps to do the same thing: 
-     * - Select "Configure Global Security"
-     * - Enable "Prevent Cross Site Request Forgery exploits"
-     * - Select "Default Crumb Issuer" as "Crumb Algorithm"
-     * - Enable "Enable proxy compatibility"
-     */  
-    println "[HJ] --> Enabling CSRF protection and proxy compability..."
-    instance.setCrumbIssuer (new DefaultCrumbIssuer (true))
-    println "[HJ] --> CSRF protection and proxy compability enabled."  
-
-
-    /* 
-     * Disable CLI over remoting
-     * 
-     * Based on https://support.cloudbees.com/hc/en-us/articles/234709648-Disable-Jenkins-CLI4   
-     */
-    println "[HJ] --> Disabling CLI over remoting..."  
-    jenkins.CLI.get().setEnabled(false)
-    println "[HJ] --> CLI over remoting disabled."  
-
-    /* 
-     * Disable old Non-Encrypted agent protocols 
-     * 
-     * Based on https://issues.jenkins-ci.org/browse/JENKINS-45841 and https://git.io/vbbM5
-     */
-    HashSet<String> newProtocols = new HashSet<>(instance.getAgentProtocols())
-    newProtocols.removeAll(Arrays.asList(
-      "JNLP3-connect", "JNLP2-connect", "JNLP-connect", "CLI-connect"   
-    ))
-    instance.setAgentProtocols(newProtocols)
 
     /* 
      * Enable Slave -> Master Access Control
@@ -187,8 +152,45 @@ Thread.start {
       instance.setAuthorizationStrategy (strategy)
       println "[HJ] --> Project matrix authorization strategy configured."
     }
-
-    // Save the state
-    instance.save ()
   }
+  
+  /*
+   * This configuration prevents some problems especially when a load balancer exists in front of Jenkins.
+   * 
+   * Based on https://github.com/samrocketman/jenkins-bootstrap-jervis/blob/master/scripts/configure-csrf-protection.groovy
+   * 
+   * Manuel steps to do the same thing: 
+   * - Select "Configure Global Security"
+   * - Enable "Prevent Cross Site Request Forgery exploits"
+   * - Select "Default Crumb Issuer" as "Crumb Algorithm"
+   * - Enable "Enable proxy compatibility"
+   */  
+  println "[HJ] --> Enabling CSRF protection and proxy compability..."
+  instance.setCrumbIssuer (new DefaultCrumbIssuer (true))
+  println "[HJ] --> CSRF protection and proxy compability enabled."  
+
+  /* 
+   * Disable CLI over remoting
+   * 
+   * Based on https://support.cloudbees.com/hc/en-us/articles/234709648-Disable-Jenkins-CLI4   
+   */
+  println "[HJ] --> Disabling CLI over remoting..."  
+  jenkins.CLI.get().setEnabled(false)
+  println "[HJ] --> CLI over remoting disabled."  
+
+  /* 
+   * Disable old Non-Encrypted agent protocols 
+   * 
+   * Based on https://issues.jenkins-ci.org/browse/JENKINS-45841 and https://git.io/vbbM5
+   */
+  HashSet<String> newProtocols = new HashSet<>(instance.getAgentProtocols())
+  newProtocols.removeAll(Arrays.asList(
+    "JNLP3-connect", "JNLP2-connect", "JNLP-connect", "CLI-connect"   
+  ))
+  instance.setAgentProtocols(newProtocols)
+
+
+  // Save the state
+  instance.save ()
+
 }
