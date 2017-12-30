@@ -40,8 +40,8 @@ enum STATUS {
    General Utilities
    -------------------------------------------------------------------*/
 /*
-  Each Jenkinsfile must call this function after it loads the script.
-*/
+ * Each Jenkinsfile must call this function after it loads the script.
+ */
 def initialize () {
 
   /* -------------------------------------------------------------------
@@ -64,8 +64,8 @@ def initialize () {
 }
 
 /*
-  ANSI Color Plug-in is required: https://wiki.jenkins-ci.org/display/JENKINS/AnsiColor+Plugin 
-*/
+ * ANSI Color Plug-in is required: https://wiki.jenkins-ci.org/display/JENKINS/AnsiColor+Plugin 
+ */
 def printMsg (def message, def color) {
    println "${color.code}${message}${COLOR.NO_COLOR.code}"
 }
@@ -101,8 +101,8 @@ def printBlueTitle (def title) {
 }
 
 /*
-  Prints environment variables excluding passwords.
-*/
+ * Prints environment variables excluding passwords.
+ */
 def printEnvironmentVariables () {
   sh "env | grep -vi password | sort > env.txt"
   printTitle ("Environment Variables", COLOR.NO_COLOR)
@@ -110,20 +110,20 @@ def printEnvironmentVariables () {
 }
 
 /*
-  If env.PL_SERVICE_PUBLIC_PORT is not "", returns it
-  
-  If env.PL_SERVICE_PUBLIC_PORT is "" but env.PL_SERVICE_PUBLIC_PORT_BASE 
-  is not, returns calculated port according to the following rule:
-  
-    DEV PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 1
-    ALPHA PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 2
-    BETA PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 3
-    PREPROD PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 4
-    PROD PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 5
-
-    Example: 
-      env.PL_SERVICE_PUBLIC_PORT_BASE = "8550" => DEV PORT: 8551, ALPHA PORT: 8552, ...
-*/
+ * If env.PL_SERVICE_PUBLIC_PORT is not "", returns it
+ * 
+ * If env.PL_SERVICE_PUBLIC_PORT is "" but env.PL_SERVICE_PUBLIC_PORT_BASE 
+ * is not, returns calculated port according to the following rule:
+ * 
+ *   DEV PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 1
+ *   ALPHA PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 2
+ *   BETA PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 3
+ *   PREPROD PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 4
+ *   PROD PORT =  env.PL_SERVICE_PUBLIC_PORT_BASE + 5
+ *
+ *   Example: 
+ *     env.PL_SERVICE_PUBLIC_PORT_BASE = "8550" => DEV PORT: 8551, ALPHA PORT: 8552, ...
+ */
 def getPublicPort () {
 
   if (env.PL_SERVICE_PUBLIC_PORT != "") 
@@ -144,9 +144,9 @@ def getPublicPort () {
 }
 
 /*
-  Tests whether given port is up and listening. If a service publishes port(s), then the function
-  can be used to test the availibility of the service.
-*/
+ * Tests whether given port is up and listening. If a service publishes port(s), then the function
+ * can be used to test the availibility of the service.
+ */
 def isPortListening (def host, def port) {  
   def timeout = 3
 
@@ -169,9 +169,9 @@ def isPortListening (def host, def port) {
 }
 
 /*
-  Checks host:port every 15 seconds until the port is available or waitPeriodInSeconds is reached. 
-  If waitPeriodInSeconds is exceeded, a timeout exception is thrown.
-*/
+ * Checks host:port every 15 seconds until the port is available or waitPeriodInSeconds is reached. 
+ * If waitPeriodInSeconds is exceeded, a timeout exception is thrown.
+ */
 def waitForPortToListen (def host, def port, def waitPeriodInSeconds) {
   timeout (time: waitPeriodInSeconds, unit: 'SECONDS') { 
     while (!isPortListening (host, port)) {
@@ -181,41 +181,66 @@ def waitForPortToListen (def host, def port, def waitPeriodInSeconds) {
 }
 
 /*
-  Executes given command on given host via ssh.
-  
-  Requires Credentials, SSH Agent and SSH Credentials plugins. 
-  Please refer to SSH Agent Plug-in documentation: https://wiki.jenkins-ci.org/x/WQLiAw
-
-  Note: -tt parameter is used to prevent "Pseudo-terminal will not be allocated 
-        because stdin is not a terminal." error.
-  
-  Note: Because sh command returns a string having '\r' line ending character,  
-        in some cases, trim() might be necessary to remove '\r'. 
-        (e.g. executeSshCommand(...).trim())
-        
-        If result is a multi line string, in some cases, the result must be converted
-        to ArrayList to prevent "java.io.NotSerializableException: java.util.AbstractList$Itr".
-        (e.g.  executeSshCommandOnHost (...).split("\\r?\\n").toList()) 
-*/
-def executeSshCommandOnHost (def command, def host, def preComment, def postComment) {
+ * Executes given command on given host via ssh with env.HJ_SSH_CREDENTIALS_USERNAME user.
+ *
+ * Requires Credentials, SSH Agent and SSH Credentials plugins. 
+ * Please refer to SSH Agent Plug-in documentation: https://wiki.jenkins-ci.org/x/WQLiAw
+ *
+ * Note: -tt parameter is used to prevent "Pseudo-terminal will not be allocated 
+ *       because stdin is not a terminal." error.
+ * 
+ * Note: Because sh command returns a string having '\r' line ending character,  
+ *       in some cases, trim () might be necessary to remove '\r'. 
+ *       (e.g. ssh (...).trim ())
+ *       
+ *       If result is a multi line string, in some cases, the result must be converted
+ *       to ArrayList to prevent "java.io.NotSerializableException: java.util.AbstractList$Itr".
+ *       (e.g.  ssh (...).split ("\\r?\\n").toList ()) 
+ */
+def ssh (def host, def command) {
   // Tries to connect remote machine for 5 seconds. If it fails, exits with 255.
   def sshPrefix = "ssh -tt -o StrictHostKeyChecking=no -o ConnectTimeout=5 ${env.HJ_SSH_CREDENTIALS_USERNAME}@${host}"
   def result = null
   sshagent(["ssh-credentials"]) {
-    println "${preComment}"
     result = sh script: "${sshPrefix} \"${command}\"", returnStdout: true
-    println "${postComment}"
   }
   return result
 }
 
 /*
-  Returns Git commit id.
-  
-  This should be performed at the point where you've checked out your 
-  sources. A 'git' executable must be available. Please refer to 
-  https://github.com/jenkinsci/pipeline-examples/blob/master/pipeline-examples/gitcommit/gitcommit.groovy
-*/
+ * Deprecated. Use ssh () instead.
+ * 
+ * Kept for backward compatibility. 
+ */
+def executeSshCommandOnHost (def command, def host, def preComment, def postComment) {
+  println "${preComment}"
+  result = ssh (host, command)
+  println "${postComment}"
+  return result
+}
+
+/*
+ * Copies source file to target directory on given host.
+ * 
+ * Equivalent to scp ${source} ${targetHostUser}@${targetHost}:${target} 
+ */
+def scp (def source, def target, def targetHost, def targetHostUser) {
+  // Tries to connect remote machine for 5 seconds. If it fails, exits with 255.
+  def sshPrefix = "scp ${source} ${targetHostUser}@${targetHost}:${target}"
+  def result = null
+  sshagent(["ssh-credentials"]) {
+    result = sh script: "${sshPrefix}", returnStdout: true
+  }
+  return result
+}
+
+/*
+ * Returns Git commit id.
+ * 
+ * This should be performed at the point where you've checked out your 
+ * sources. A 'git' executable must be available. Please refer to 
+ * https://github.com/jenkinsci/pipeline-examples/blob/master/pipeline-examples/gitcommit/gitcommit.groovy
+ */
 def getGitCommitId () {
   gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
   shortCommit = gitCommit.take(7)
@@ -224,22 +249,27 @@ def getGitCommitId () {
 }
 
 /*
-  * Creates pipeline version from pom.xml, commit ID and Jenkins's build number:
-  ** Pipeline version = pomMajorVersion<.pomMinorVersion><.pomIncrementalVersion><.otherVersion1>...<.otherVersionN>.getGitCommitId.buildNumber
-  * Version in pom.xml must have at least major version such as 1-SNAPSHOT. Normally 
-     we use major, minor and incremental versions such as 1.0.0-SNAPSHOT.
-  ** Here are valid pom.xml versions: 1-SNAPSHOT, 1.0-SNAPSHOT, 1.0.0-SNAPSHOT, 1.0.0.0-SNAPSHOT, 1.0.0.0.VEDO-538-SNAPSHOT, ...
-  * Sets env.PL_VERSION to pipeline version
-  * Sets currentBuild.displayName to pipeline version
-  * Sets Maven project's version to pipeline version
-  * Returns pipeline version
-
-  Note: setMavenBasedPipelineVersion () requires pom.xml. That 
-        is why we need checkout has to be completed before calling this
-        function.
-
-  Note: "-SNAPSHOT" is removed from the pom.xml version.
-*/
+ * 1) Creates pipeline version from pom.xml, commit ID and Jenkins's build number:
+ * 
+ * Pipeline version = pomMajorVersion<.pomMinorVersion><.pomIncrementalVersion><.otherVersion1>...<.otherVersionN>.getGitCommitId.buildNumber
+ *
+ * Version in pom.xml must have at least major version such as 1-SNAPSHOT. Normally 
+ * we use major, minor and incremental versions such as 1.0.0-SNAPSHOT.
+ *
+ * Here are valid pom.xml versions: 1-SNAPSHOT, 1.0-SNAPSHOT, 1.0.0-SNAPSHOT, 
+ * 1.0.0.0-SNAPSHOT, 1.0.0.0.ISSUE-538-SNAPSHOT, ...
+ * 
+ * 2) Sets env.PL_VERSION to pipeline version
+ * 3) Sets currentBuild.displayName to pipeline version
+ * 4) Sets Maven project's version to pipeline version
+ * 5) Returns pipeline version
+ *
+ * Note: setMavenBasedPipelineVersion () requires pom.xml. That 
+ *       is why we need checkout has to be completed before calling this
+ *       function.
+ *
+ * Note: "-SNAPSHOT" is removed from the pom.xml version.
+ */
 def setMavenBasedPipelineVersion () {
   def pomXml = readFile("pom.xml")
   def parsedPomXml = new XmlSlurper().parseText(pomXml)
@@ -275,12 +305,12 @@ def setMavenBasedPipelineVersion () {
 }
 
 /*
-  * Creates pipeline version from commit ID and Jenkins's build number: 
-  ** pipeline version = getGitCommitId.buildNumber
-  * Sets env.PL_VERSION to pipeline version
-  * Sets currentBuild.displayName to pipeline version
-  * Returns pipeline version
-*/
+ * Creates pipeline version from commit ID and Jenkins's build number: 
+ * pipeline version = getGitCommitId.buildNumber
+ * Sets env.PL_VERSION to pipeline version
+ * Sets currentBuild.displayName to pipeline version
+ * Returns pipeline version
+ */
 def setPipelineVersion () {
   // pomMajorVersion.pomMinorVersion.pomIncrementalVersion.getGitCommitId.buildNumber
   env.PL_VERSION = getGitCommitId () + '.' + env.BUILD_NUMBER
@@ -293,16 +323,16 @@ def getPipelineVersion () {
 }
 
 /*
-  https://github.com/jenkinsci/pipeline-examples/blob/master/pipeline-examples/maven-and-jdk-specific-version/mavenAndJdkSpecificVersion.groovy
-
-  Apache Maven related side notes:
-  --batch-mode : recommended in CI to inform maven to not run in interactive mode (less logs)
-  -V : strongly recommended in CI, will display the JDK and Maven versions in use.
-       Very useful to be quickly sure the selected versions were the ones you think.
-  -U : force maven to update snapshots each time (default : once an hour, makes no sense in CI).
-  -Dsurefire.useFile=false : useful in CI. Displays test errors in the logs directly (instead of
-                             having to crawl the workspace files to see the cause).
-*/
+ * https://github.com/jenkinsci/pipeline-examples/blob/master/pipeline-examples/maven-and-jdk-specific-version/mavenAndJdkSpecificVersion.groovy
+ *
+ * Apache Maven related side notes:
+ * --batch-mode : recommended in CI to inform maven to not run in interactive mode (less logs)
+ * -V : strongly recommended in CI, will display the JDK and Maven versions in use.
+ *      Very useful to be quickly sure the selected versions were the ones you think.
+ * -U : force maven to update snapshots each time (default : once an hour, makes no sense in CI).
+ * -Dsurefire.useFile=false : useful in CI. Displays test errors in the logs directly (instead of
+ *                            having to crawl the workspace files to see the cause).
+ */
 def compileMavenProject () {
   sh "mvn -B -V -U clean compile"
 }
@@ -320,21 +350,21 @@ def deployMavenArtifactsToArtifactory () {
 }
 
 /*
-  Builds the image(latest) and tags it with pipeline version.
-
-  If "latest" image on local machine is older than the "latest" image on
-  registry, "FROM ....:latest" in Dockerfile causes local(older) image to be 
-  used. To force the latest image from resgitry to be used, we pass --pull=true 
-  option to build command. (See https://github.com/moby/moby/issues/4238)
-*/
+ * Builds the image(latest) and tags it with pipeline version.
+ *
+ * If "latest" image on local machine is older than the "latest" image on
+ * registry, "FROM ....:latest" in Dockerfile causes local(older) image to be 
+ * used. To force the latest image from resgitry to be used, we pass --pull=true 
+ * option to build command. (See https://github.com/moby/moby/issues/4238)
+ */
 def buildDockerImage (def options) {
   println "[INFO] options: ${options}"
   sh "docker build ${options} --pull=true --build-arg HJ_BUILD_DATE=\"`date`\" --build-arg HJ_IMAGE=\"${env.PL_DOCKER_IMAGE}\" --build-arg HJ_VERSION=\"${env.PL_VERSION}\" -t ${env.HJ_DOCKER_REMOTE_REPO}/${env.PL_DOCKER_IMAGE} -t ${env.HJ_DOCKER_REMOTE_REPO}/${env.PL_DOCKER_IMAGE}:${env.PL_VERSION} ."
 }
 
 /*
-  Pushes both latest and tagged image to Artifactory.
-*/
+ * Pushes both latest and tagged image to Artifactory.
+ */
 def pushDockerImageToArtifactory () {
   sh "docker login --username ${env.HJ_AUTH_CREDENTIALS_USERNAME} --password ${env.HJ_AUTH_CREDENTIALS_PASSWORD} ${env.HJ_DOCKER_REMOTE_REPO};docker push ${env.HJ_DOCKER_REMOTE_REPO}/${env.PL_DOCKER_IMAGE}"
 }
@@ -345,18 +375,18 @@ def pushDockerImageToArtifactory () {
    -------------------------------------------------------------------*/
 // https://issues.jenkins-ci.org/browse/JENKINS-34738
 /*
-  Sets the number of builds and artifacts to be kept by Jenkins. 
-  The function simply sets "Discard old builds" properties ofof the job.
-  
-  WARNING: By desing, the properties step will remove all job properties 
-           currently configured in this job, either from the UI or from 
-           an earlier properties step.
-           
-           This includes configuration for discarding old builds, 
-           parameters, concurrent builds and build triggers.
-           
-           See: https://groups.google.com/forum/#!topic/jenkinsci-issues/kbql47PFXvI   
-*/
+ * Sets the number of builds and artifacts to be kept by Jenkins. 
+ * The function simply sets "Discard old builds" properties ofof the job.
+ * 
+ * WARNING: By desing, the properties step will remove all job properties 
+ *          currently configured in this job, either from the UI or from 
+ *          an earlier properties step.
+ *          
+ *          This includes configuration for discarding old builds, 
+ *          parameters, concurrent builds and build triggers.
+ *          
+ *          See: https://groups.google.com/forum/#!topic/jenkinsci-issues/kbql47PFXvI   
+ */
 def setNumberToKeep (def number) {
   if (number != null && number != "") {
     properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: "${number}", daysToKeepStr: '', numToKeepStr: "${number}"]]])
@@ -364,11 +394,11 @@ def setNumberToKeep (def number) {
 }
 
 /*
-  Returns "Max # of builds to keep" value of "Discard old builds" 
-  settings in the job
-  
-  Reference: https://blog.sandra-parsick.de/2014/02/16/groovy-script-for-jenkins-script-console-to-add-or-modify-discard-old-builds-setting/
-*/
+ * Returns "Max # of builds to keep" value of "Discard old builds" 
+ * settings in the job
+ * 
+ * Reference: https://blog.sandra-parsick.de/2014/02/16/groovy-script-for-jenkins-script-console-to-add-or-modify-discard-old-builds-setting/
+ */
 def getNumToKeep () {
   def buildDiscarder = getJob().getBuildDiscarder() 
   return (buildDiscarder == null) ? null : buildDiscarder.numToKeep
@@ -387,13 +417,13 @@ def getSuccessfulBuilds () {
 }
 
 /*
-  Returns build versions to be deleted by Jenkins at the end of
-  the current build. The function make calculations according
-  to "Discard old builds" setting of the job and the builds marked 
-  as "Keep this build forever".
-  
-  Note: Build's display name = Build's Version = Pipeline version.
-*/
+ * Returns build versions to be deleted by Jenkins at the end of
+ * the current build. The function make calculations according
+ * to "Discard old builds" setting of the job and the builds marked 
+ * as "Keep this build forever".
+ * 
+ * Note: Build's display name = Build's Version = Pipeline version.
+ */
 def getBuildVersionsToBeDeletedByJenkins () {
   def job = getJob ()
   def builds = job.getBuilds()
@@ -418,8 +448,8 @@ def getBuildVersionsToBeDeletedByJenkins () {
 }
 
 /*
-  Returns build numbers of builds marked as "Keep this build forever".
-*/
+ * Returns build numbers of builds marked as "Keep this build forever".
+ */
 def getBuildNumbersMarkedAsKeepForever () {
 
   def buildNumbers = []
@@ -435,18 +465,18 @@ def getBuildNumbersMarkedAsKeepForever () {
 }
 
 /*
-  Returns build versions those are not discarded by Jenkins at the 
-  end of the current build. The function make calculations according
-  to "Discard old builds" setting of the job and the builds marked 
-  as "Keep this build forever".
-  
-  Jenkins do not discard following builds:
-  - marked as "Keep this build forever"
-  - last n builds(including currently running) conforming to 
-    "Discard Old Builds" settings.
-    
-  Note: Build's display name = Build's Version = Pipeline version.
-*/
+ * Returns build versions those are not discarded by Jenkins at the 
+ * end of the current build. The function make calculations according
+ * to "Discard old builds" setting of the job and the builds marked 
+ * as "Keep this build forever".
+ * 
+ * Jenkins do not discard following builds:
+ * - marked as "Keep this build forever"
+ * - last n builds(including currently running) conforming to 
+ *   "Discard Old Builds" settings.
+ *   
+ * Note: Build's display name = Build's Version = Pipeline version.
+ */
 def getBuildVersionsKeptByJenkins () {
   def job = getJob()
   def builds = job.getBuilds()
@@ -476,8 +506,8 @@ def getBuildVersionsKeptByJenkins () {
 }
 
 /*
-  Enables "Keep this build forever" option for given build.  
-*/
+ * Enables "Keep this build forever" option for given build.  
+ */
 def keepBuildForever (def buildNumber) {
   def job = getJob()
   def builds = job.getBuilds()
@@ -491,17 +521,17 @@ def keepBuildForever (def buildNumber) {
 }
 
 /*
-Prints installed plugins and their versions to console in a format compatible 
-with plugins.sh (https://github.com/jenkinsci/docker/blob/master/plugins.sh).
-
-Sample output:
-...
-ace-editor:1.1
-analysis-core:1.82
-ant:1.4
-antisamy-markup-formatter:1.5  
-...
-*/
+ * Prints installed plugins and their versions to console in a format compatible 
+ * with plugins.sh (https://github.com/jenkinsci/docker/blob/master/plugins.sh).
+ * 
+ * Sample output:
+ * ...
+ * ace-editor:1.1
+ * analysis-core:1.82
+ * ant:1.4
+ * antisamy-markup-formatter:1.5  
+ * ...
+ */
 def printInstalledPlugins () {
   def pluginList = []
   for (plugin in Jenkins.instance.pluginManager.plugins) {
@@ -521,10 +551,10 @@ def printInstalledPlugins () {
    Utilities for Maven artifacts on Artifactory
    -------------------------------------------------------------------*/
 /*
-  Returns version list of the given artifact on release repository
-
-  Test: curl -X GET -u <user>:<password> "http://mycompany.com/artifactory/api/search/versions?g=com.mycompany.myproject&a=myservice&repos=artifactoryMavenReleaseRepo"
-*/
+ * Returns version list of the given artifact on release repository
+ *
+ * Test: curl -X GET -u <user>:<password> "http://mycompany.com/artifactory/api/search/versions?g=com.mycompany.myproject&a=myservice&repos=artifactoryMavenReleaseRepo"
+ */
 def getMavenArtifactVersionsOnArtifactory () {
   
   def command = "curl -X GET -u ${env.HJ_AUTH_CREDENTIALS_USERNAME}:${env.HJ_AUTH_CREDENTIALS_PASSWORD} \"${env.HJ_ARTIFACTORY_SERVER}/api/search/versions?g=${env.PL_MAVEN_GROUP}&a=${env.PL_MAVEN_ARTIFACT}&repos=${env.HJ_ARTIFACTORY_MAVEN_RELEASE_REPO}\""
@@ -545,19 +575,19 @@ def getMavenArtifactVersionsOnArtifactory () {
 }
 
 /*
-  Deletes given artifact on release repository
-
-  Test: curl -X DELETE -v -u <user>:<password> "http://mycompany.com/artifactory/artifactoryMavenReleaseRepo/com/mycompany/myproject/myservice/0.0.1.8193108.106"
-*/
+ * Deletes given artifact on release repository
+ *
+ * Test: curl -X DELETE -v -u <user>:<password> "http://mycompany.com/artifactory/artifactoryMavenReleaseRepo/com/mycompany/myproject/myservice/0.0.1.8193108.106"
+ */
 def deleteMavenArtifactOnArtifactory (def version) {
   def command = "curl -X DELETE -v -u ${env.HJ_AUTH_CREDENTIALS_USERNAME}:${env.HJ_AUTH_CREDENTIALS_PASSWORD} \"${env.HJ_ARTIFACTORY_SERVER}/${env.HJ_ARTIFACTORY_MAVEN_RELEASE_REPO}/${env.PL_MAVEN_ARTIFACT_PATH}/${version}\""
   sh "${command}"
 }
 
 /*
-  Deletes eligible artifacts from Artifactory. See @getBuildVersionsKeptByJenkins()
-  for eligible artifacts.
-*/
+ * Deletes eligible artifacts from Artifactory. See @getBuildVersionsKeptByJenkins()
+ * for eligible artifacts.
+ */
 def discardMavenArtifactsOnArtifactory () {
   println "[INFO] discardMavenArtifactsOnArtifactory () is executing ..."
   def buildVersionsKeptByJenkins = getBuildVersionsKeptByJenkins ()
@@ -578,11 +608,11 @@ def discardMavenArtifactsOnArtifactory () {
    Utilities for Maven artifacts on Maven local repository 
    -------------------------------------------------------------------*/
 /*
-  Returns all the versions but *-SNAPSHOT of the artifact on local 
-  Maven repository
-  
-  Test: find $HOME/.m2/repository/com/mycompany/myproject/myservice/* -prune -not -name *-SNAPSHOT -type d -exec basename {} \;
-*/
+ * Returns all the versions but *-SNAPSHOT of the artifact on local 
+ * Maven repository
+ * 
+ * Test: find $HOME/.m2/repository/com/mycompany/myproject/myservice/* -prune -not -name *-SNAPSHOT -type d -exec basename {} \;
+ */
 def getMavenArtifactVersionsOnLocalMavenRepository () {
   def command = "find \$HOME/.m2/repository/${env.PL_MAVEN_ARTIFACT_PATH}/* -prune -not -name *-SNAPSHOT -type d -exec basename {} \\;"
   def versions = sh script: "${command}" , returnStdout: true
@@ -591,8 +621,8 @@ def getMavenArtifactVersionsOnLocalMavenRepository () {
 }
 
 /*
-  Test: rm -rf /var/jenkins_home/.m2/repository/com/mycompany/myproject/myservice/0.0.1.9c53363.34
-*/
+ * Test: rm -rf /var/jenkins_home/.m2/repository/com/mycompany/myproject/myservice/0.0.1.9c53363.34
+ */
 def deleteMavenArtifactOnLocalMavenRepository (def version) {
   if (version != null && version != "")  {
     println "${version} will be deleted from local maven repository ..."
@@ -602,9 +632,9 @@ def deleteMavenArtifactOnLocalMavenRepository (def version) {
 }
 
 /*
-  Deletes eligible artifacts from local Maven repository. See 
-  @getBuildVersionsKeptByJenkins() for eligible artifacts.
-*/
+ * Deletes eligible artifacts from local Maven repository. See 
+ * @getBuildVersionsKeptByJenkins() for eligible artifacts.
+ */
 def discardMavenArtifactsOnLocalMavenRepository () {
   println "[INFO] discardMavenArtifactsOnLocalMavenRepository () is executing ..."
   def buildVersionsKeptByJenkins = getBuildVersionsKeptByJenkins ()
@@ -624,10 +654,10 @@ def discardMavenArtifactsOnLocalMavenRepository () {
    Utilities for Docker images on Artifactory
    -------------------------------------------------------------------*/
 /*
-   Returns all the tags but 'latest' of the image from Artifactory.
-
-   Test: curl -X GET -u <user>:<password> "http://mycompany.com/artifactory/api/docker/artifactoryDockerRepo/v2/mycompany/myproject/myservice/tags/list"
-*/
+ *  Returns all the tags but 'latest' of the image from Artifactory.
+ *
+ *  Test: curl -X GET -u <user>:<password> "http://mycompany.com/artifactory/api/docker/artifactoryDockerRepo/v2/mycompany/myproject/myservice/tags/list"
+ */
 def getDockerImageTagsOnArtifactory () {
   def command = "curl -X GET -u ${env.HJ_AUTH_CREDENTIALS_USERNAME}:${env.HJ_AUTH_CREDENTIALS_PASSWORD} \"${env.HJ_ARTIFACTORY_SERVER}/api/docker/${env.HJ_ARTIFACTORY_DOCKER_REPO}/v2/${env.PL_DOCKER_IMAGE}/tags/list\""
   def jsonText = sh script: "${command}" , returnStdout: true
@@ -638,10 +668,10 @@ def getDockerImageTagsOnArtifactory () {
 }
 
 /*
-  Deletes given tag on docker repository
-  
-  Test: curl -X DELETE -v -u <user>:<password> "http://mycompany.com/artifactory/api/docker/artifactoryDockerRepo/mycompany/myproject/myservice/0.0.1.8193108.106"
-*/
+ * Deletes given tag on docker repository
+ * 
+ * Test: curl -X DELETE -v -u <user>:<password> "http://mycompany.com/artifactory/api/docker/artifactoryDockerRepo/mycompany/myproject/myservice/0.0.1.8193108.106"
+ */
 def deleteDockerImageOnArtifactory (def tag) {
 
   def command = "curl -X DELETE -v -u ${env.HJ_AUTH_CREDENTIALS_USERNAME}:${env.HJ_AUTH_CREDENTIALS_PASSWORD} \"${env.HJ_ARTIFACTORY_SERVER}/${env.HJ_ARTIFACTORY_DOCKER_REPO}/${env.PL_DOCKER_IMAGE}/${tag}\""
@@ -649,8 +679,8 @@ def deleteDockerImageOnArtifactory (def tag) {
 }
 
 /*
-  Deletes eligible image tags from Artifactory. See 
-  @getBuildVersionsKeptByJenkins() for eligible image tags.
+ * Deletes eligible image tags from Artifactory. See 
+ * @getBuildVersionsKeptByJenkins() for eligible image tags.
 */
 def discardImagesOnArtifactory () {
   println "[INFO] discardImagesOnArtifactory () is executing ..."
@@ -672,11 +702,11 @@ def discardImagesOnArtifactory () {
    Utilities for Docker images on host and swarm cluster
    -------------------------------------------------------------------*/
 /*
-  Test(on swarm manager node): docker node ls | tail -n +2 | awk '{ print $2 " " $3}'
-*/
+ * Test(on swarm manager node): docker node ls | tail -n +2 | awk '{ print $2 " " $3}'
+ */
 def getSwarmNodes () {
   def command = "docker node ls | tail -n +2 | awk '{ print \\\$2 \\\" \\\" \\\$3}'"
-  def resultList = executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "").split("\\r?\\n")
+  def resultList = ssh (env.PL_SWARM_MANAGER_NODE, command).split("\\r?\\n")
   def nodes = []
   for (item in resultList) {
     subItems = item.tokenize(' ')
@@ -688,33 +718,6 @@ def getSwarmNodes () {
   }
   resultList = null
   return nodes
-}
-
-def updateSwarmService (def tag, def options) {
-
-  def publicPort = getPublicPort ()
-
-  // These are generic environment variables passed to every container.
-  // Application running inside the container can use them if it is needed.
-  def envOptions="--env-add ENV_NAME=${env.PL_DEPLOY_ENV} \
-                  --env-add PROJECT_NAME=${env.PL_PROJECT_NAME} \
-                  --env-add SERVICE_NAME=${env.PL_SERVICE_NAME} \
-                  --env-add SWARM_SERVICE_NAME=${env.PL_SWARM_SERVICE_NAME} \
-                  --env-add PUBLIC_PORT=${publicPort} \
-                  --env-add VERSION=${env.PL_VERSION}"
-
-  // SYS-6497
-  if (tag == "latest") {
-    options = "${options} --force"
-  }
-
-  def command = "docker service update \
-                   ${envOptions} \
-                   ${options} \
-                   --image ${env.HJ_DOCKER_REMOTE_REPO}/${env.PL_DOCKER_IMAGE}:${tag} ${env.PL_SWARM_SERVICE_NAME}"
-  
-  def result = executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
-  println result
 }
 
 def createSwarmService (def tag, def options) {
@@ -755,7 +758,34 @@ def createSwarmService (def tag, def options) {
                    ${options} \
                    ${env.HJ_DOCKER_REMOTE_REPO}/${env.PL_DOCKER_IMAGE}:${tag}"
   
-  def result = executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
+  def result = ssh (env.PL_SWARM_MANAGER_NODE, command)
+  println result
+}
+
+def updateSwarmService (def tag, def options) {
+
+  def publicPort = getPublicPort ()
+
+  // These are generic environment variables passed to every container.
+  // Application running inside the container can use them if it is needed.
+  def envOptions="--env-add ENV_NAME=${env.PL_DEPLOY_ENV} \
+                  --env-add PROJECT_NAME=${env.PL_PROJECT_NAME} \
+                  --env-add SERVICE_NAME=${env.PL_SERVICE_NAME} \
+                  --env-add SWARM_SERVICE_NAME=${env.PL_SWARM_SERVICE_NAME} \
+                  --env-add PUBLIC_PORT=${publicPort} \
+                  --env-add VERSION=${env.PL_VERSION}"
+
+  // SYS-6497
+  if (tag == "latest") {
+    options = "${options} --force"
+  }
+
+  def command = "docker service update \
+                   ${envOptions} \
+                   ${options} \
+                   --image ${env.HJ_DOCKER_REMOTE_REPO}/${env.PL_DOCKER_IMAGE}:${tag} ${env.PL_SWARM_SERVICE_NAME}"
+  
+  def result = ssh (env.PL_SWARM_MANAGER_NODE, command)
   println result
 }
 
@@ -783,26 +813,26 @@ def createOverlayNetworkIfDoesNotExist (def network) {
 }
 
 /*
-  Executes "docker system prune" command on each node: https://docs.docker.com/engine/reference/commandline/system_prune/     
+ * Executes "docker system prune" command on each node: https://docs.docker.com/engine/reference/commandline/system_prune/     
  */
 def doCleanupOnSwarm () {
   def nodes = getSwarmNodes()
   def command = "docker system prune -af"
   for (node in nodes) {
-    result = executeSshCommandOnHost (command, node, "", "")
+    result = ssh (node, command)
     println result
   }
 }
 
 /*
-  Returns following values as service status:
-    * 1 (STATUS.SERVICE_DOES_NOT_EXIST): If service does not exist.
-    * 2 (STATUS.SERVICE_RUNNING): If service is running.     
-    * 3 (STATUS.SERVICE_IS_NOT_RUNNING): If service exists but is not running.
+ * Returns following values as service status:
+ *   * 1 (STATUS.SERVICE_DOES_NOT_EXIST): If service does not exist.
+ *   * 2 (STATUS.SERVICE_RUNNING): If service is running.     
+ *   * 3 (STATUS.SERVICE_IS_NOT_RUNNING): If service exists but is not running.
  */
 def getServiceStatus (def service) {
   def command = "docker service ls | grep -w ${service} | awk '{print \\\$4 }' | cut -d/ -f1"
-  def result = executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "").trim()
+  def result = ssh (env.PL_SWARM_MANAGER_NODE, command).trim()
   if (result == "") {
     return STATUS.SERVICE_DOES_NOT_EXIST
   } else if (result == "0") {
@@ -837,35 +867,35 @@ def failIfDependentServicesAreNotRunning (def dependentServices) {
 }
 
 /*
-  Starts given service. The service must have already be created.
-  If replicas parameter is not provided, 1 replica is created. 
-*/
+ * Starts given service. The service must have already be created.
+ * If replicas parameter is not provided, 1 replica is created. 
+ */
 def startService (def service, def replicas) {  
   if (replicas == null || replicas == "") {
     replicas = 1
   }
   def command = "docker service scale ${service}=${replicas}"
-  executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
+  ssh (env.PL_SWARM_MANAGER_NODE, command)
 }
 
 def stopService (def service) {  
   def command = "docker service update --detach=false --replicas 0 ${service}"
-  executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
+  ssh (env.PL_SWARM_MANAGER_NODE, command)
 }
 
 def deleteService (def service) {
   def command = "docker service rm ${service}"
-  executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
+  ssh (env.PL_SWARM_MANAGER_NODE, command)
 }
 
 def stopAllServices () {  
   def command = "for i in \$(docker service ls -q); do docker service update --detach=false --replicas 0 \$i; done"
-  executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
+  ssh (env.PL_SWARM_MANAGER_NODE, command)
 }
 
 def deleteAllServices () {  
   def command = "for i in \$(docker service ls -q); do docker service rm \$i; done"
-  executeSshCommandOnHost (command, env.PL_SWARM_MANAGER_NODE, "", "")
+  ssh (env.PL_SWARM_MANAGER_NODE, command)
 }
 
 initialize ()
