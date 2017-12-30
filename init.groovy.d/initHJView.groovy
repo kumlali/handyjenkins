@@ -14,8 +14,19 @@ def hjJobs = ["color-test",
               "remote-file-loader-plugin-test",
               "ssh-test",
               "do-swarm-cleanup", 
-              "print-installed-plugins"]
+              "print-installed-plugins",
+              "regional-settings-test"]
 
+
+def deleteJobs (def jobs) {
+  for (jobName in jobs) {
+    job = Jenkins.instance.getItemByFullName(jobName)
+    if (job != null) {
+      job.delete ()
+      println "[HJ] --> Job '" + jobName + "' deleted."
+    }
+  }
+}
 
 def addView (def viewName, def jobs) {
   if (Jenkins.instance.getView (viewName) == null) {
@@ -39,10 +50,11 @@ def addView (def viewName, def jobs) {
 }
 
 Thread.start {
-  println "[HJ] --> Creating HJ view..."
   if (env['HJ_CREATE_HJ_VIEW']=="true") {
+    println "[HJ] --> Creating HJ view and adding pre-installed jobs to it..."
     addView ("[HJ]", hjJobs)
   } else {
-    println "[HJ] --> HJ view was not created because HJ_CREATE_HJ_VIEW is not true."
+    deleteJobs (hjJobs)
+    println "[HJ] --> HJ_CREATE_HJ_VIEW is not true. Therefore, HJ view was not created and pre-installed jobs were deleted."
   }
 }
