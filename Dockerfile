@@ -50,16 +50,6 @@ USER root
 
 
 ########################################################################
-# Set timezone to Europe/Istanbul
-########################################################################
-ARG HJ_TIMEZONE
-ENV TIMEZONE=${HJ_TIMEZONE:-Europe/Istanbul}
-ENV JAVA_OPTS="${JAVA_OPTS} -Duser.timezone=${TIMEZONE}"
-RUN unlink /etc/localtime \
-  && ln -s /usr/share/zoneinfo/"${TIMEZONE}" /etc/localtime
-
-
-########################################################################
 # Install certificates
 # * Key and certificate to access Jenkins over HTTPS
 # * Public certificates of git, svn, Artifactory, SonarCube or other services 
@@ -100,8 +90,8 @@ RUN apt-get update \
   && echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Install Docker, partly from https://github.com/docker-library/docker/blob/master/1.12/Dockerfile
-ENV DOCKER_VERSION="17.06.0-ce"
-ENV DOCKER_COMPOSE_VERSION="1.15.0-rc1"
+ENV DOCKER_VERSION="17.12.0-ce"
+ENV DOCKER_COMPOSE_VERSION="1.18.0"
 RUN set -x \
   && curl -kfSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o docker.tgz \
   && tar -xzvf docker.tgz \
@@ -138,13 +128,11 @@ RUN sudo mkdir -p /hj \
 # hj - Flyway
 ########################################################################
 ENV FLYWAY_HOME="/hj/flyway"
-ENV FLYWAY_VERSION=4.2.0
-ENV POSTGRESQL_JDBC_DRIVER_VERSION=42.1.4
+ENV FLYWAY_VERSION=5.0.3
 RUN curl -ko /hj/flyway.tar.gz https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}.tar.gz \
   && tar -xvf /hj/flyway.tar.gz -C /hj \
   && mv /hj/flyway-${FLYWAY_VERSION} ${FLYWAY_HOME} \
-  && rm /hj/flyway.tar.gz \
-  && curl -ko ${FLYWAY_HOME}/drivers/postgresql-${POSTGRESQL_JDBC_DRIVER_VERSION}.jar https://jdbc.postgresql.org/download/postgresql-${POSTGRESQL_JDBC_DRIVER_VERSION}.jar
+  && rm /hj/flyway.tar.gz
 ENV PATH="${FLYWAY_HOME}:${PATH}"
 
 
