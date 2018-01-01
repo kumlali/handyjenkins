@@ -8,31 +8,38 @@ Put it simply, `handyjenkins` is a customized Docker image based on [Jenkins's o
 * https://github.com/Accenture/adop-jenkins
 * https://github.com/fabric8io/jenkins-docker
 
-It aims to overcome following complications:
+It aims to overcome following complications those must mostly be handled manually:
 * Accessing internet over a corporate proxy which replaces SSL certificates of target sites with its own(SSL Interception proxy - [here](https://bto.bluecoat.com/webguides/proxysg/security_first_steps/Content/Solutions/SSL/ssl_solution.htm), [here](https://www.secureworks.com/research/transitive-trust), [here](http://www.zdnet.com/article/how-the-nsa-and-your-boss-can-intercept-and-break-ssl) and [here](https://media.blackhat.com/bh-eu-12/Jarmoc/bh-eu-12-Jarmoc-SSL_TLS_Interception-Slides.pdf)).
-* Configuring proxy settings
-* Configuring LDAP settings
-* Configuring Root URL setting
-* Configuring credentials
-* Configuring global security
-* Configuring project-based matrix authorization strategy
-* Configuring default views
-* Installing plugins
-* Enabling HTTPS
-* Accessing Docker host within Jenkins's container 
-* Connecting and deploying artifacts to servers with ssh keys
-* Installing Maven
-* Installing Flyway and PostgreSQL driver
-* Using pipeline templates
-* Creating test jobs
-* Creating central scripts having functions to simplify continues delivery processes and pipelines:  
-  * Automatically removing old builds from Jenkins
-  * Automatically deleting old artifacts from local Maven repositories
-  * Automatically removing old Maven artifacts and old Docker images on Artifactory
-  * Automatically adding GELF logging support to containers created by Jenkins.
-  * Automatically creating pipeline versions and keeping it throughout the process
-  * Automatically marking builds as "keep forever" if pipeline ends by deploying to production
-  * Automatically generating unique ports for different deployment environments
+* Manually adding certificates of SSL endpoints such as Git server and Artifactory
+* Manually editing proxy settings
+* Manually editing LDAP settings
+* Manually editing root URL setting
+* Manually configuring credentials
+* Manually configuring global security
+* Manually configuring project-based matrix authorization strategy
+* Manually creating and configuring views
+* Manually installing plugins
+* Manually configuring HTTPS
+* Manually adding ssh keys 
+* Manually installing Docker client inside Jenkins container
+* Manually installing Maven
+* Manually installing Flyway
+* Manually adding existing jobs
+* Creating scripts that simplify continues delivery
+* Creating a structure that allows using pipeline templates
+
+`handyjenkins` comes with a script that simplifies continues delivery. Some of the functionalties are;
+* ssh: executing commands on remote machines with key based authentication
+* scp: copying files to remote machines with key based authentication
+* executing Docker commands on the host which Jenkins container runs
+* creating Docker swarm services on given Docker master machine
+* removing old builds from Jenkins
+* deleting old artifacts from local Maven repository
+* removing old Maven artifacts and old Docker images from Artifactory
+* adding GELF logging support to containers created by Jenkins
+* creating pipeline versions and keeping it throughout the process
+* marking builds as "keep forever" after production deployment
+* generating unique ports for different deployment environments
 
 # Screenshots
 
@@ -132,8 +139,8 @@ COPY jobs/ /usr/share/jenkins/ref/jobs
 # Set timezone to Europe/Istanbul
 ENV TIMEZONE="Europe/Istanbul"
 ENV JAVA_OPTS="${JAVA_OPTS} -Duser.timezone=${TIMEZONE}"
-RUN unlink /etc/localtime \
-  && ln -s /usr/share/zoneinfo/"${TIMEZONE}" /etc/localtime
+RUN sudo unlink /etc/localtime \
+  && sudo ln -s /usr/share/zoneinfo/"${TIMEZONE}" /etc/localtime
 
 # If needed, add Oracle JDBC driver for Flyway
 # RUN curl -o /hj/flyway/drivers/ojdbc6-11.2.0.2.0.jar http://artifactory.mycompany.com/artifactory/releases/com/oracle/ojdbc6/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar
