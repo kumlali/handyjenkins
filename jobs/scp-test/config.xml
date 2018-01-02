@@ -1,0 +1,64 @@
+<flow-definition plugin="workflow-job@2.16">
+  <actions>
+    <org.jenkinsci.plugins.workflow.multibranch.JobPropertyTrackerAction plugin="workflow-multibranch@2.16">
+      <jobPropertyDescriptors>
+        <string>jenkins.model.BuildDiscarderProperty</string>
+      </jobPropertyDescriptors>
+    </org.jenkinsci.plugins.workflow.multibranch.JobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>5</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>5</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.42">
+    <script>#!groovy
+def userInput
+def sourceFile
+def targetHost
+def targetDir
+
+timeout (time: 2, unit: &apos;MINUTES&apos;) {
+
+    userInput = input(
+      id: &apos;userInput&apos;, message: &apos;Enter scp test parameters&apos;, parameters: [
+      [$class: &apos;TextParameterDefinition&apos;, defaultValue: &apos;&apos;, description: &apos;Source file&apos;, name: &apos;sourceFile&apos;],
+      [$class: &apos;TextParameterDefinition&apos;, defaultValue: &apos;&apos;, description: &apos;Target host&apos;, name: &apos;targetHost&apos;],
+      [$class: &apos;TextParameterDefinition&apos;, defaultValue: &apos;&apos;, description: &apos;Target directory&apos;, name: &apos;targetDir&apos;]])
+
+    sourceFile = userInput[&apos;sourceFile&apos;]
+    targetHost = userInput[&apos;targetHost&apos;]
+    targetDir = userInput[&apos;targetDir&apos;]
+}
+
+node {
+
+  timestamps {
+
+    UTILITIES = load(&quot;/hj/scripts/utilities.groovy&quot;)
+
+    UTILITIES.scp (sourceFile, targetHost, targetDir)
+    println &quot;Successfully copied file. &quot;
+      + &quot;\n\tSource file: &quot; + sourceFile
+      + &quot;\n\tTarget host:&quot; + targetHost
+      + &quot;\n\tTarget directory: &quot; + targetDir
+    println UTILITIES.ssh (targetHost, &quot;ls -all &quot; + targetDir)
+
+  }
+
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
