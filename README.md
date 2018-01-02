@@ -140,8 +140,10 @@ FROM alisadikkumlali/handyjenkins:latest
 COPY certs/ /hj/certs
 RUN sudo cp /hj/certs/* /usr/local/share/ca-certificates && sudo update-ca-certificates
 
-# If needed, add keys for key-based authentication.
+# If needed, add keys for key-based authentication. Do not forget to change
+# owner of the files to jenkins:jenkins.
 COPY ssh/ /hj/ssh
+RUN sudo chown -R jenkins:jenkins /hj/ssh
 
 # If needed, add Maven's setting.xml suitable to your environment.
 COPY conf/settings.xml /hj/maven/conf/settings.xml
