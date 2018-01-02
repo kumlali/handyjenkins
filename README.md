@@ -63,10 +63,13 @@ docker build \
 
 # Creating Your Jenkins Image By Customizing `handyjenkins` Source
 * Clone https://github.com/kumlali/handyjenkins.git 
-* Put your certificates (SSL, proxy, Gitea, SVN, Artifactory etc.) into `certs` directory. Skip this step if you do not need Jenkins to serve on HTTPS port and to connect Gitea, SVN, Artifactory etc. via HTTPS.
-* Replace `conf/settings.xml` with the one having your company's private Maven repository definitions. Skip this step if you do not have private repository and customized `settings.xml` for your environment.
+* Put your Jenkins HTTPS key and certificate into `certs` directory. Skip this step if you do not need Jenkins to serve on HTTPS port.
+* Put your proxy certificate into `certs` directory. Skip this step if proxy server does not exist.
+* Put your Gitea, SVN, Artifactory etc. certificates into `certs` directory. Skip this step if those applications do not serve on HTTPS port.
+* Replace `conf/settings.xml` with the one that has your company's private Maven repository definitions. Skip this step if you do not have private repository and customized `settings.xml` for your environment.
 * Replace sample `ssh/id_rsa` and `ssh/id_rsa.pub` files with yours. For testing purposes, you can use sample files and add content of `ssh/id_rsa.pub` into `authorized_keys` of your target servers. However, please be warned that it is not safe and recomended. Skip this step if you do not need to ssh via key-based authentication.
-* Build the image. If you are required to use proxy server to access internet, you need to provide build arguments for the proxy server:
+* If you need, copy your existing jobs into `jobs` directory. You can, of course, delete `handyjenkins`s own jobs.
+* Build the image. If proxy server exists, you need to provide build arguments for the proxy server. Skip these arguments otherwise:
 ```bash
 docker build \
   --build-arg HTTP_PROXY="http://proxy.mycompany.com:8080" \
@@ -97,15 +100,18 @@ BUILD DATE: Fri Nov 10 15:43:26 +03 2017, IMAGE: myjenkins, VERSION: 1.0
 ```bash
 mkdir myjenkins
 ```
-* Create `certs`, `conf` and `ssh` directories under project's directory. If you have jobs to include the image create `jobs` directory as well.
+* Create `certs`, `conf` and `ssh` directories under project's directory. If you have existing jobs that you want to include the image, create `jobs` directory as well.
 ```bash
 cd myjenkins
 mkdir certs conf jobs ssh
 ```
-* Put your certificates (SSL, proxy, Gitea, SVN, Artifactory etc.) into `certs` directory
-* Put Maven's `settings.xml` suitable to your environment into `conf` directory
-* Copy job directories(if exists) into `jobs` directory
-* Put `id_rsa` and `id_rsa.pub` files used for key based authentication into `ssh` directory
+* Put your Jenkins HTTPS key and certificate into `certs` directory. Skip this step if you do not need Jenkins to serve on HTTPS port.
+* Put your proxy certificate into `certs` directory. Skip this step if proxy server does not exist.
+* Put your Gitea, SVN, Artifactory etc. certificates into `certs` directory. Skip this step if those applications do not serve on HTTPS port.
+* Put Maven's `settings.xml` suitable to your environment into `conf` directory. Skip this step if you do not have private repository and customized `settings.xml` for your environment.
+* Put `id_rsa` and `id_rsa.pub` files used for key based authentication into `ssh` directory. Skip this step if you do not need to ssh via key-based authentication.
+* If you need, copy your existing jobs into `jobs` directory. You can, of course, delete `handyjenkins`s own jobs.
+
 ```bash
 myjenkins/
 ├── certs/
@@ -118,32 +124,39 @@ myjenkins/
 ├── conf/
 │   └── settings.xml
 ├── jobs/
-|    ├── job1
-|    └── job2
+│   ├── job1
+│   ├── ...
+│   └── jobN
 ├── ssh/
-|    ├── id_rsa
-|    └── id_rsa.pub
+│   ├── id_rsa
+│   └── id_rsa.pub
 ```
-* Create `Dockerfile` under your p|roject directory
+* Create `Dockerfile` under your project directory
 ```bash
 FROM alisadikkumlali/handyjenkins:latest
 
+# If needed, copy key & certificate for Jenkins HTTPS and certificate 
+# for proxy server, Gitea, Artifactory etc..
 COPY certs/ /hj/certs
 RUN sudo cp /hj/certs/* /usr/local/share/ca-certificates && sudo update-ca-certificates
+
+# If needed, add keys for key-based authentication.
 COPY ssh/ /hj/ssh
+
+# If needed, add Maven's setting.xml suitable to your environment.
 COPY conf/settings.xml /hj/maven/conf/settings.xml
 
-# If needed, add common jobs for the company
+# If needed, add common jobs for the company.
 COPY jobs/ /usr/share/jenkins/ref/jobs
 
-# Set timezone to Europe/Istanbul
+# If needed, set timezone suitable to your environment.
 ENV TIMEZONE="Europe/Istanbul"
 ENV JAVA_OPTS="${JAVA_OPTS} -Duser.timezone=${TIMEZONE}"
 RUN sudo unlink /etc/localtime \
   && sudo ln -s /usr/share/zoneinfo/"${TIMEZONE}" /etc/localtime
 
 # If needed, add Oracle JDBC driver for Flyway
-# RUN curl -o /hj/flyway/drivers/ojdbc6-11.2.0.2.0.jar http://artifactory.mycompany.com/artifactory/releases/com/oracle/ojdbc6/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar
+RUN curl -o /hj/flyway/drivers/ojdbc6-11.2.0.2.0.jar http://artifactory.mycompany.com/artifactory/releases/com/oracle/ojdbc6/11.2.0.2.0/ojdbc6-11.2.0.2.0.jar
 ```
 * Build the image
 ```
@@ -152,7 +165,7 @@ docker build -t myjenkins .
 
 # Running Your Jenkins Container Based on `handyjenkins`
 
-We need to provide runtime configuration as environment variables. All the variables `handyjenkins` understand exist in `conf/handyjenkins.conf`. We need to customize  `conf/handyjenkins.conf` according to our environment.
+We need to provide runtime configuration as environment variables. All the variables that `handyjenkins` understand exist in `conf/handyjenkins.conf` file. We need to customize  `conf/handyjenkins.conf` according to our environment.
 ```
 ########################################################################
 # Proxy server settings
@@ -268,7 +281,7 @@ docker service create --name ${serviceName} \
 With Firefox:
 
 * Open Firefox on the machine that container runs or any swarm node for the swarm case.
-* Connect to [https://localhost:8443](https://localhost:8443)
+* Connect to [https://localhost:8443](https://localhost:8443). 
 
 With curl:
 
@@ -276,9 +289,11 @@ With curl:
 curl -kX GET https://localhost:8443
 ```
 
+Note: If you changed `JENKINS_OPTS` in `handykenkins.conf`, use HTTP/HTTPS and port suitable to your configuration.
+
 # Using Utility Functions in Pipelines
 
-[utilities.groovy](scripts/utilities.groovy) provides functions to simplify continues delivery processes and pipelines. The file is under container's `/hj/scripts` directory and can be loaded within pipeline script:
+[utilities.groovy](scripts/utilities.groovy) provides functions that simplify continues delivery processes. The file is under container's `/hj/scripts` directory and can be loaded in pipeline script as:
 ```groovy
 #!groovy
 
@@ -316,7 +331,7 @@ node {
     }
 
     stage ("Check Quality of Tested Maven Project") {
-      // mvn -B sonar:sonar -P sonar-profile -Dsonar.host.url=${env.HJ_SONAR_SERVER}
+      // mvn -B ${env.HJ_SONAR_USERNAME}:${env.HJ_SONAR_PASSWORD} -P ${env.HJ_SONAR_PROFILE} -Dsonar.host.url=${env.HJ_SONAR_SERVER}
       UTILITIES.checkQualityOfTestedMavenProject ()
     }
 
@@ -334,10 +349,16 @@ Let's assume;
 * multiple projects can co-exist on the same swarm cluster. For example, test environment of project1 and project2 can co-exist on the same test cluster
 * for each project; we have dev, alpha, beta and preprod as test environments those run on test swarm cluster
 * for each project; we have prod environment that runs on prod swarm cluster
-* we have a Maven project and would like to run it as swarm service
+* we have a Maven project and would like to build and run it as swarm service
+* we want to create a different Docker network for each environment
+* we want to update database before deploying the application
 * we want to create different ports for dev, alpha, beta, ... automatically
+* we want to execute smoke tests against dev environment
+* we want to execute regression tests against alpha environment
+* we want to send test and prod logs to different Graylog server
+* we want to mark the build as "keep forever" after production deployment
 
-Here is Dockerfile for it:
+Here is sample Dockerfile for the application:
 
 ```Dockerfile
 FROM artifactory.mycompany.com/java:alpine
@@ -345,6 +366,9 @@ FROM artifactory.mycompany.com/java:alpine
 ARG SERVICE_NAME=<serviceName>
 ENV SERVICE_NAME=${SERVICE_NAME}
 
+# We assume the application configuration is loaded from config.yml and
+# each environment (dev, alpha, beta, preprod, prod) has its own config.yml
+# file.
 CMD java -jar /data/${SERVICE_NAME}.jar server /data/conf/${ENV_NAME}/config.yml
 
 EXPOSE 80

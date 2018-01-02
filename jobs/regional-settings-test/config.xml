@@ -6,7 +6,7 @@
   <properties/>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.42">
     <script>node {
-    sh &quot;locale;cat /etc/timezone;date&quot;
+    sh &quot;ls -all /etc/localtime;locale;cat /etc/timezone;date&quot;
 }</script>
     <sandbox>true</sandbox>
   </definition>
