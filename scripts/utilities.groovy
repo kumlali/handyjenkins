@@ -226,10 +226,10 @@ def executeSshCommandOnHost (def command, def host, def preComment, def postComm
  */
 def scp (def source, def target, def targetHost, def targetHostUser) {
   // Tries to connect remote machine for 5 seconds. If it fails, exits with 255.
-  def sshPrefix = "scp ${source} ${targetHostUser}@${targetHost}:${target}"
+  def command = "scp ${source} ${targetHostUser}@${targetHost}:${target}"
   def result = null
   sshagent(["ssh-credentials"]) {
-    result = sh script: "${sshPrefix}", returnStdout: true
+    result = sh script: "${command}", returnStdout: true
   }
   return result
 }
