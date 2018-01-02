@@ -220,13 +220,16 @@ def executeSshCommandOnHost (def command, def host, def preComment, def postComm
 }
 
 /*
- * Copies source file to target directory on given host.
+ * Copies source file to target directory on given host with env.HJ_SSH_CREDENTIALS_USERNAME user.
+ *
+ * Requires Credentials, SSH Agent and SSH Credentials plugins. 
+ * Please refer to SSH Agent Plug-in documentation: https://wiki.jenkins-ci.org/x/WQLiAw
  * 
- * Equivalent to scp ${source} ${targetHostUser}@${targetHost}:${target} 
+ * Equivalent to scp ${sourceFile} ${env.HJ_SSH_CREDENTIALS_USERNAME}@${targetHost}:${targetDir} 
  */
-def scp (def source, def target, def targetHost, def targetHostUser) {
+def scp (def sourceFile, def targetHost, def targetDir) {
   // Tries to connect remote machine for 5 seconds. If it fails, exits with 255.
-  def command = "scp ${source} ${targetHostUser}@${targetHost}:${target}"
+  def command = "scp -o StrictHostKeyChecking=no ${sourceFile} ${env.HJ_SSH_CREDENTIALS_USERNAME}@${targetHost}:${targetDir}"
   def result = null
   sshagent(["ssh-credentials"]) {
     result = sh script: "${command}", returnStdout: true
