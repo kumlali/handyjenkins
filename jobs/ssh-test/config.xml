@@ -39,10 +39,7 @@ node {
 
     UTILITIES = load(&quot;/hj/scripts/utilities.groovy&quot;)
 
-    def hostName = UTILITIES.executeSshCommandOnHost (&quot;sudo hostname&quot;,
-          &quot;${userInput}&quot;,
-          &quot;&quot;,
-          &quot;&quot;).trim()
+    def hostName = UTILITIES.ssh(&quot;${userInput}&quot;, &quot;sudo hostname&quot;).trim()
     println &quot;Successfully connected to ${hostName}.&quot;
 
   }
