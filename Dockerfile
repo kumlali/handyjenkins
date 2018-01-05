@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.99
+FROM jenkins/jenkins:2.100
 
 ########################################################################
 # Set ARGs and ENVs
