@@ -9,10 +9,7 @@
 */
 import jenkins.model.*
 
-// Variables
 def env = System.getenv ()
-
-// Constants
 def instance = Jenkins.getInstance ()
 
 if (instance.proxy == null) {

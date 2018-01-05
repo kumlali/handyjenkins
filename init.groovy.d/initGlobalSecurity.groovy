@@ -9,12 +9,8 @@ import com.cloudbees.plugins.credentials.CredentialsScope
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
 import com.cloudbees.plugins.credentials.SystemCredentialsProvider
 
-// Variables
 def env = System.getenv ()
-
-// Constants
 def instance = Jenkins.getInstance ()
-
 
 /* 
  * Configure Project-based Matrix Authorization Strategy

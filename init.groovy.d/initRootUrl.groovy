@@ -3,7 +3,6 @@
 */
 import jenkins.model.*
 
-// Variables
 def env = System.getenv ()
 def rootUrl = env['HJ_ROOT_URL']
 
