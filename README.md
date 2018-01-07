@@ -18,6 +18,7 @@ It aims to overcome following complications those must mostly be handled manuall
 * Manually configuring global security
 * Manually configuring project-based matrix authorization strategy
 * Manually creating and configuring views
+* Manually creating Gitea server
 * Manually installing plugins
 * Manually configuring HTTPS
 * Manually adding ssh keys 
@@ -116,7 +117,7 @@ mkdir certs conf jobs ssh
 myjenkins/
 ├── certs/
 │   ├── artifactory.mycompany.com.crt
-│   ├── gogs.mycompany.com.crt
+│   ├── gitea.mycompany.com.crt
 │   ├── myjenkins.mycompany.com.cert.pem
 │   ├── myjenkins.mycompany.com.key.pem
 │   ├── proxy.mycompany.com.crt
@@ -141,7 +142,7 @@ COPY certs/ /hj/certs
 RUN sudo cp /hj/certs/* /usr/local/share/ca-certificates && sudo update-ca-certificates
 
 # If needed, add keys for key-based authentication. Do not forget to change
-# owner of the files to jenkins:jenkins.
+# the owner of the files to jenkins:jenkins.
 COPY ssh/ /hj/ssh
 RUN sudo chown -R jenkins:jenkins /hj/ssh
 
