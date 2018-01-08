@@ -9,7 +9,7 @@ bouncycastle-api:2.16.2
 branch-api:2.0.17
 build-timeout:1.19
 checkstyle:3.49
-cloudbees-folder:6.2.1
+cloudbees-folder:6.3
 cobertura:1.12
 command-launcher:1.2
 config-file-provider:2.16.4
@@ -63,7 +63,7 @@ scm-api:2.2.6
 script-security:1.39
 ssh-agent:1.15
 ssh-credentials:1.13
-ssh-slaves:1.24
+ssh-slaves:1.25
 structs:1.10
 subversion:2.10.2
 timestamper:1.8.9
