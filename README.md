@@ -29,11 +29,11 @@ It aims to overcome following complications those must mostly be handled manuall
 * Creating scripts that simplify continues delivery
 * Creating a structure that allows using pipeline templates
 
-`handyjenkins` comes with a script that simplifies continues delivery. Some of the functionalties are;
-* ssh: executing commands on remote machines with key based authentication
-* scp: copying files to remote machines with key based authentication
+`handyjenkins` comes with a script that simplifies continues delivery. Some of the functionalities are;
+* ssh: executing commands on remote hosts with key based authentication
+* scp: copying files to remote hosts with key based authentication
 * executing Docker commands on the host which Jenkins container runs
-* creating Docker swarm services on given Docker master machine
+* creating Docker swarm services on given Docker master host
 * removing old builds from Jenkins
 * deleting old artifacts from local Maven repository
 * removing old Maven artifacts and old Docker images from Artifactory
@@ -283,7 +283,7 @@ docker service create --name ${serviceName} \
 
 With Firefox:
 
-* Open Firefox on the machine that container runs or any swarm node for the swarm case.
+* Open Firefox on the host that container runs or any swarm node for the swarm case.
 * Connect to [https://localhost:8443](https://localhost:8443). 
 
 With curl:
