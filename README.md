@@ -26,10 +26,10 @@ It aims to overcome following complications those must mostly be handled manuall
 * Manually installing Maven
 * Manually installing Flyway
 * Manually adding existing jobs
-* Creating scripts that simplify continues delivery
+* Creating scripts that simplify continuous delivery
 * Creating a structure that allows using pipeline templates
 
-`handyjenkins` comes with a script that simplifies continues delivery. Some of the functionalities are;
+`handyjenkins` comes with a script that simplifies continuous delivery. Some of the functionalities are;
 * ssh: executing commands on remote hosts with key based authentication
 * scp: copying files to remote hosts with key based authentication
 * executing Docker commands on the host which Jenkins container runs
@@ -296,7 +296,7 @@ Note: If you changed `JENKINS_OPTS` in `handykenkins.conf`, use HTTP/HTTPS and p
 
 # Using Utility Functions in Pipelines
 
-[utilities.groovy](scripts/utilities.groovy) provides functions that simplify continues delivery processes. The file is under container's `/hj/scripts` directory and can be loaded in pipeline script as:
+[utilities.groovy](scripts/utilities.groovy) provides functions that simplify continuous delivery processes. The file is under container's `/hj/scripts` directory and can be loaded in pipeline script as:
 ```groovy
 #!groovy
 
