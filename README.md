@@ -46,9 +46,9 @@ It aims to overcome following complications those must mostly be handled manuall
 
 |  |  |  |
 |:-------------:|:-------:|:-------:|
-|![Default jobs, views and LDAP authentication](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_01.jpg)|![Credentials](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_02.jpg)|![Credentials - SSH Username with private key](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_03.jpg)|
-|![Credentials - Username and password](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_04.jpg)|![Configure System - Number of executors](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_05.jpg)|![Configure Global Security - LDAP configuration](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_06.jpg)|
-|![Configure Global Security - Project-based Matrix Authorization Strategy, CSRF, proxy compability, CLI over Remoting](https://raw.githubusercontent.com/kumlali/public/master/images/handyjenkins/handyjenkins_screenshot_07.jpg)| | |
+|![Default jobs, views and LDAP authentication](images/handyjenkins_screenshot_01.jpg)|![Credentials](images/handyjenkins_screenshot_02.jpg)|![Credentials - SSH Username with private key](images/handyjenkins_screenshot_03.jpg)|
+|![Credentials - Username and password](images/handyjenkins_screenshot_04.jpg)|![Configure System - Number of executors](images/handyjenkins_screenshot_05.jpg)|![Configure Global Security - LDAP configuration](images/handyjenkins_screenshot_06.jpg)|
+|![Configure Global Security - Project-based Matrix Authorization Strategy, CSRF, proxy compability, CLI over Remoting](images/handyjenkins_screenshot_07.jpg)| | |
 
 
 # How to Build `handyjenkins`
